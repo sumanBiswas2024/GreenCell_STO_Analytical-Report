@@ -30,6 +30,7 @@ sap.ui.define([
 				year: year,
 				years: years,
 				plantDraft: "",
+				plantContext: "—",
 				plantBusy: false,
 				monthlyBusy: false,
 				plantVisible: false,
@@ -58,6 +59,10 @@ sap.ui.define([
 			this.getView().setModel(new JSONModel({
 				byMonth: [],
 				byMonthlyPlant: [],
+				totals: {
+					pgi: "0",
+					grn: "0"
+				},
 				table: []
 			}), "monthly");
 			this._committedPlants = [];
@@ -94,7 +99,7 @@ sap.ui.define([
 
 		_connectChartPopover: function(chartId) {
 			var chart = this.byId(chartId);
-			var legendRequired = ["plantValueChart", "monthlyTrendChart", "monthlyPlantChart"].indexOf(chartId) !== -1;
+			var legendRequired = chartId === "plantValueChart";
 			if (legendRequired && chart && chart.getLegendVisible && !chart.getLegendVisible()) {
 				chart.setLegendVisible(true);
 			}
@@ -164,6 +169,7 @@ sap.ui.define([
 				}
 			});
 			this._committedPlants = plants;
+			this._viewModel.setProperty("/plantContext", plants.join(", "));
 			this._plantLoaded = false;
 			this._monthlyLoaded = false;
 			this._viewModel.setProperty("/error", "");
@@ -182,6 +188,10 @@ sap.ui.define([
 			this.getView().getModel("monthly").setData({
 				byMonth: [],
 				byMonthlyPlant: [],
+				totals: {
+					pgi: "0",
+					grn: "0"
+				},
 				table: []
 			});
 			this._viewModel.setProperty("/plantBusy", true);
@@ -229,6 +239,7 @@ sap.ui.define([
 			this._viewModel.setProperty("/kpi/po", "–");
 			this._viewModel.setProperty("/kpi/plantCaption", "Select supplying plant(s)");
 			this._viewModel.setProperty("/plantDraft", "");
+			this._viewModel.setProperty("/plantContext", "—");
 			this._viewModel.setProperty("/kpi/pgiDocs", "–");
 			this._viewModel.setProperty("/kpi/grnDocs", "–");
 			this._viewModel.setProperty("/kpi/miroDocs", "–");
@@ -240,6 +251,10 @@ sap.ui.define([
 			this.getView().getModel("monthly").setData({
 				byMonth: [],
 				byMonthlyPlant: [],
+				totals: {
+					pgi: "0",
+					grn: "0"
+				},
 				table: []
 			});
 		},
@@ -316,6 +331,10 @@ sap.ui.define([
 			this.getView().getModel("monthly").setData({
 				byMonth: [],
 				byMonthlyPlant: [],
+				totals: {
+					pgi: "0",
+					grn: "0"
+				},
 				table: []
 			});
 			this._viewModel.setProperty("/monthlyError", "");
@@ -371,7 +390,7 @@ sap.ui.define([
 			this._metadataPromise = model.getMetaModel().loaded().then(function() {
 				var metaModel = model.getMetaModel();
 				return {
-					plant: this._entityDescriptor(metaModel, "es_plant_wiseset", "es_plant_wise", ["werks", "reswk", "ebeln", "dmbtr", "budat"]),
+					plant: this._entityDescriptor(metaModel, "es_plant_wiseset", "es_plant_wise", ["werks", "reswk", "ebeln", "dmbtr"]),
 					monthly: this._entityDescriptor(metaModel, "es_monthly_stoset", "es_monthly_sto", ["werks", "reswk", "mjahr"].concat(this._monthFields(
 						"pgi")).concat(this._monthFields("grn")))
 				};
@@ -428,14 +447,12 @@ sap.ui.define([
 				werks: String(get("werks") || ""),
 				reswk: String(get("reswk") || ""),
 				po: this._number(get("ebeln")),
-				value: amount / 100000,
-				budat: this._formatDate(get("budat"))
+				value: amount / 100000
 			};
 		},
 
 		_groupPlantRows: function(rows) {
 			var byReceiving = {};
-			var byPair = {};
 			rows.forEach(function(row) {
 				var plant = byReceiving[row.werks] || (byReceiving[row.werks] = {
 					werks: row.werks,
@@ -444,19 +461,6 @@ sap.ui.define([
 				});
 				plant.po += row.po;
 				plant.value += row.value;
-				var key = row.werks + "|" + row.reswk;
-				var pair = byPair[key] || (byPair[key] = {
-					werks: row.werks,
-					reswk: row.reswk,
-					po: 0,
-					value: 0,
-					budat: row.budat
-				});
-				pair.po += row.po;
-				pair.value += row.value;
-				if (row.budat && (!pair.budat || row.budat > pair.budat)) {
-					pair.budat = row.budat;
-				}
 			});
 			var allPlants = Object.keys(byReceiving).map(function(key) {
 				return byReceiving[key];
@@ -486,8 +490,9 @@ sap.ui.define([
 					legendLabel: "Others · " + otherValue.toFixed(1) + " Lakh"
 				});
 			}
-			var table = Object.keys(byPair).map(function(key) {
-				var row = byPair[key];
+			var table = allPlants.slice().sort(function(a, b) {
+				return b.po - a.po;
+			}).map(function(row) {
 				row.value = Number(row.value.toFixed(2));
 				return row;
 			});
@@ -543,6 +548,14 @@ sap.ui.define([
 			}).sort(function(a, b) {
 				return b.pgi - a.pgi;
 			});
+			var totals = byMonth.reduce(function(result, month) {
+				result.pgi += month.pgi;
+				result.grn += month.grn;
+				return result;
+			}, {
+				pgi: 0,
+				grn: 0
+			});
 			monthlyPlant.forEach(function(plant) {
 				plant.months.forEach(function(month) {
 					monthlyTable.push({
@@ -568,6 +581,10 @@ sap.ui.define([
 						grn: plant.grn
 					};
 				}),
+				totals: {
+					pgi: this._formatNumber(totals.pgi),
+					grn: this._formatNumber(totals.grn)
+				},
 				table: monthlyTable
 			};
 		},
@@ -662,7 +679,7 @@ sap.ui.define([
 		},
 
 		onPlantSearch: function(event) {
-			this._applyTableSearch("plantTable", ["werks", "reswk"], event.getParameter("newValue"));
+			this._applyTableSearch("plantTable", ["werks"], event.getParameter("newValue"));
 		},
 		onMonthlySearch: function(event) {
 			this._applyTableSearch("monthlyTable", ["werks", "month"], event.getParameter("newValue"));
@@ -686,9 +703,6 @@ sap.ui.define([
 				label: "Receiving Plant",
 				property: "werks"
 			}, {
-				label: "Supplying Plant",
-				property: "reswk"
-			}, {
 				label: "STO POs",
 				property: "po",
 				type: "Number"
@@ -696,9 +710,6 @@ sap.ui.define([
 				label: "PGI Value (INR Lakh)",
 				property: "value",
 				type: "Number"
-			}, {
-				label: "Posting Date",
-				property: "budat"
 			}], "STO_Plant_Summary.xlsx");
 		},
 		onExportMonthly: function() {

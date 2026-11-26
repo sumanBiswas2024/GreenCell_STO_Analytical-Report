@@ -7,20 +7,25 @@
 				<VBox class="stoHeader sapUiResponsiveContentPadding">
 					<Title text="Green Cell STO Report" level="H1" class="stoTitle"/>
 					<Text text="Stock Transfer Orders: PO › PGI › GRN › MIRO" class="stoSubtitle"/>
-					<HBox wrap="Wrap" alignItems="End" class="stoFilters">
+					<HBox wrap="Wrap" alignItems="End" class="stoFilters filterSurface">
 						<VBox class="plantFilter">
 							<Label text="Supplying Plant" required="true" labelFor="plantInput"/>
 							<MultiInput id="plantInput" placeholder="Enter plant codes and press Enter" showValueHelp="false" tokenUpdate="onPlantTokenUpdate"
 								value="{view>/plantDraft}" submit="onPlantSubmit"/>
 						</VBox>
-						<VBox class="yearFilter sapUiSmallMarginBegin">
+						<VBox class="yearFilter">
 							<Label text="Posting Year (monthly section)" labelFor="yearSelect"/>
-							<Select id="yearSelect" selectedKey="{view>/year}" items="{view>/years}" change="onYearChange">
+							<Select id="yearSelect" width="100%" selectedKey="{view>/year}" items="{view>/years}" change="onYearChange">
 								<core:Item key="{view>key}" text="{view>text}"/>
 							</Select>
 						</VBox>
-						<Button text="Go" type="Emphasized" press="onGo" class="sapUiSmallMarginBegin"/>
-						<Button text="Clear" type="Transparent" press="onClear" class="sapUiSmallMarginBegin"/>
+						<VBox class="filterActions">
+							<Label text="Actions"/>
+							<HBox class="filterActionButtons" alignItems="Center">
+								<Button text="Go" type="Emphasized" press="onGo"/>
+								<Button text="Clear" type="Transparent" press="onClear"/>
+							</HBox>
+						</VBox>
 					</HBox>
 				</VBox>
 				<VBox class="stoBody sapUiResponsiveContentPadding">
@@ -113,15 +118,22 @@
 							<VBox class="sectionHeading"><Title text="{view>/monthlyTitle}" level="H2" class="sectionTitle"/><Text text="Posting year selection applies to this section only" class="sectionSubtitle"/></VBox>
 						</HBox>
 						<layout:Grid defaultSpan="XL12 L12 M12 S12" hSpacing="0" vSpacing="1" class="pairedChartGrid">
-							<VBox class="pairedChartPane"><Title text="Monthly STO Trend Analysis" level="H3"/><Text text="PGI and GRN records by posting month" class="mutedText"/>
-								<chart:ChartContainer showFullScreen="true" showPersonalization="false" showZoom="true" showLegend="true" showLegendButton="false"
+							<VBox class="pairedChartPane">
+								<HBox class="monthlyChartHeading" alignItems="Center" justifyContent="SpaceBetween" wrap="Wrap">
+									<VBox class="monthlyChartHeadingCopy"><Title text="Monthly STO Trend Analysis" level="H3"/><Text text="PGI and GRN records by posting month" class="mutedText"/></VBox>
+									<OverflowToolbar width="auto" class="chartMetricToolbar monthlyTrendTotals">
+										<ObjectNumber number="{monthly>/totals/pgi}" unit="PGI total" class="chartTotal trendPgiTotal"/>
+										<ObjectNumber number="{monthly>/totals/grn}" unit="GRN total" class="chartTotal trendGrnTotal"/>
+									</OverflowToolbar>
+								</HBox>
+								<chart:ChartContainer showFullScreen="true" showPersonalization="false" showZoom="true" showLegend="false" showLegendButton="false"
 									showSelectionDetails="true" class="chartTools">
 									<chart:content>
 										<chart:ChartContainerContent title="Monthly PGI and GRN trend" icon="sap-icon://line-chart">
 											<chart:content>
 												<viz:VizFrame id="monthlyTrendChart" vizType="column" width="100%" height="18.5rem" uiConfig="{applicationSet:'fiori'}"
 													renderComplete="onChartRenderComplete"
-													vizProperties="{title:{visible:false},plotArea:{dataLabel:{visible:true},colorPalette:['#0a6ed1','#e9730c']},legend:{visible:true,alignment:'middle'},legendGroup:{layout:{position:'bottom'}}}">
+													vizProperties="{title:{visible:false},plotArea:{dataLabel:{visible:true},colorPalette:['#0a6ed1','#e9730c']},legend:{visible:false}}">
 													<viz:dataset>
 														<viz.data:FlattenedDataset data="{monthly>/byMonth}">
 															<viz.data:dimensions><viz.data:DimensionDefinition name="Month" value="{monthly>month}"/></viz.data:dimensions>
@@ -134,16 +146,27 @@
 										</chart:ChartContainerContent>
 									</chart:content>
 								</chart:ChartContainer>
+								<HBox width="100%" class="chartLegend" justifyContent="Center" alignItems="Center">
+									<HBox class="chartLegendItem" alignItems="Center"><Text text=" " class="chartLegendSwatch pgiLegendSwatch"/><Text text="PGI records"/></HBox>
+									<HBox class="chartLegendItem" alignItems="Center"><Text text=" " class="chartLegendSwatch grnLegendSwatch"/><Text text="GRN records"/></HBox>
+								</HBox>
 							</VBox>
-							<VBox class="pairedChartPane"><Title text="Receiving Plant-wise PGI vs GRN" level="H3"/><Text text="Document counts by receiving plant" class="mutedText"/>
-								<chart:ChartContainer showFullScreen="true" showPersonalization="false" showZoom="true" showLegend="true" showLegendButton="false"
+							<VBox class="pairedChartPane">
+								<HBox class="monthlyChartHeading" alignItems="Center" justifyContent="SpaceBetween" wrap="Wrap">
+									<VBox class="monthlyChartHeadingCopy"><Title text="Receiving Plant-wise PGI vs GRN" level="H3"/><Text text="Document counts by receiving plant" class="mutedText"/></VBox>
+									<OverflowToolbar width="auto" class="chartMetricToolbar monthlyPlantTotals">
+										<ObjectNumber number="{monthly>/totals/pgi}" unit="PGI total" class="chartTotal plantPgiTotal"/>
+										<ObjectNumber number="{monthly>/totals/grn}" unit="GRN total" class="chartTotal plantGrnTotal"/>
+									</OverflowToolbar>
+								</HBox>
+								<chart:ChartContainer showFullScreen="true" showPersonalization="false" showZoom="true" showLegend="false" showLegendButton="false"
 									showSelectionDetails="true" class="chartTools">
 									<chart:content>
 										<chart:ChartContainerContent title="PGI and GRN by receiving plant" icon="sap-icon://bar-chart">
 											<chart:content>
 												<viz:VizFrame id="monthlyPlantChart" vizType="column" width="100%" height="18.5rem" uiConfig="{applicationSet:'fiori'}"
 													renderComplete="onChartRenderComplete"
-													vizProperties="{title:{visible:false},plotArea:{dataLabel:{visible:true},colorPalette:['#8b5cf6','#00a6a6']},legend:{visible:true,alignment:'middle'},legendGroup:{layout:{position:'bottom'}}}">
+													vizProperties="{title:{visible:false},plotArea:{dataLabel:{visible:true},colorPalette:['#8b5cf6','#00a6a6']},legend:{visible:false}}">
 													<viz:dataset>
 														<viz.data:FlattenedDataset data="{monthly>/byMonthlyPlant}">
 															<viz.data:dimensions><viz.data:DimensionDefinition name="Receiving Plant" value="{monthly>werks}"/></viz.data:dimensions>
@@ -156,52 +179,54 @@
 										</chart:ChartContainerContent>
 									</chart:content>
 								</chart:ChartContainer>
+								<HBox width="100%" class="chartLegend" justifyContent="Center" alignItems="Center">
+									<HBox class="chartLegendItem" alignItems="Center"><Text text=" " class="chartLegendSwatch monthlyPgiLegendSwatch"/><Text text="PGI records"/></HBox>
+									<HBox class="chartLegendItem" alignItems="Center"><Text text=" " class="chartLegendSwatch monthlyGrnLegendSwatch"/><Text text="GRN records"/></HBox>
+								</HBox>
 							</VBox>
 						</layout:Grid>
 					</VBox>
 					<layout:Grid defaultSpan="XL12 L12 M12 S12" hSpacing="1" vSpacing="1" class="tableSplitGrid" visible="{view>/summaryVisible}">
-						<VBox class="summaryCard tablePanel sapUiRespGridSpanXL7 sapUiRespGridSpanL7 sapUiRespGridSpanM12 sapUiRespGridSpanS12">
-								<OverflowToolbar><Title text="Plant Summary" level="H3"/><ToolbarSpacer/><SearchField width="10rem" placeholder="Search plants" liveChange="onPlantSearch"/><Button text="Export" icon="sap-icon://excel-attachment" press="onExportPlant"/></OverflowToolbar>
-								<table:Table id="plantTable" width="100%" rows="{plant>/table}" selectionMode="None" visibleRowCountMode="Auto" minAutoRowCount="4"
-									enableColumnReordering="true" showNoData="true">
-									<table:columns>
-										<table:Column sortProperty="werks" filterProperty="werks"><Label text="Receiving Plant"/>
-											<table:template><Text text="{plant>werks}"/></table:template>
-										</table:Column>
-										<table:Column sortProperty="reswk" filterProperty="reswk"><Label text="Supplying Plant"/>
-											<table:template><Text text="{plant>reswk}"/></table:template>
-										</table:Column>
-										<table:Column sortProperty="po" filterProperty="po" hAlign="End"><Label text="STO POs"/>
-											<table:template><ObjectNumber number="{plant>po}"/></table:template>
-										</table:Column>
-										<table:Column sortProperty="value" filterProperty="value" hAlign="End"><Label text="PGI Value (INR Lakh)"/>
-											<table:template><ObjectNumber number="{plant>value}"/></table:template>
-										</table:Column>
-										<table:Column sortProperty="budat" filterProperty="budat"><Label text="Posting Date"/>
-											<table:template><Text text="{plant>budat}"/></table:template>
-										</table:Column>
-									</table:columns>
-								</table:Table>
+						<VBox class="summaryCard tablePanel">
+							<OverflowToolbar><Title text="Plant Summary" level="H3"/><ToolbarSpacer/><SearchField width="10rem" placeholder="Search plants" liveChange="onPlantSearch"/><Button text="Export" icon="sap-icon://excel-attachment" press="onExportPlant"/></OverflowToolbar>
+							<HBox class="tableContextBar" alignItems="Center"><core:Icon src="sap-icon://factory"/><Text text="{= 'Supplying plant(s): ' + ${view>/plantContext} + ' · Monthly section year: ' + ${view>/year} }"/></HBox>
+							<table:Table id="plantTable" width="100%" rows="{plant>/table}" selectionMode="None" visibleRowCountMode="Auto" minAutoRowCount="8"
+								enableColumnReordering="true" showNoData="true">
+								<table:columns>
+									<table:Column sortProperty="werks" filterProperty="werks"><Label text="Receiving Plant"/>
+										<table:template><Text text="{plant>werks}"/></table:template>
+									</table:Column>
+									<table:Column sortProperty="po" filterProperty="po" hAlign="End"><Label text="STO POs"/>
+										<table:template><ObjectNumber number="{plant>po}"/></table:template>
+									</table:Column>
+									<table:Column sortProperty="value" filterProperty="value" hAlign="End"><Label text="PGI Value (INR Lakh)"/>
+										<table:template><ObjectNumber number="{plant>value}"/></table:template>
+									</table:Column>
+								</table:columns>
+							</table:Table>
+							<layoutData><layout:GridData span="XL5 L5 M5 S12"/></layoutData>
 						</VBox>
-						<VBox class="summaryCard tablePanel sapUiRespGridSpanXL5 sapUiRespGridSpanL5 sapUiRespGridSpanM12 sapUiRespGridSpanS12">
-								<OverflowToolbar><Title text="Monthly PGI / GRN Summary" level="H3"/><ToolbarSpacer/><SearchField width="10rem" placeholder="Search plants or months" liveChange="onMonthlySearch"/><Button text="Export" icon="sap-icon://excel-attachment" press="onExportMonthly"/></OverflowToolbar>
-								<table:Table id="monthlyTable" width="100%" rows="{monthly>/table}" selectionMode="None" visibleRowCountMode="Auto" minAutoRowCount="4"
-									enableColumnReordering="true" showNoData="true">
-									<table:columns>
-										<table:Column sortProperty="werks" filterProperty="werks"><Label text="Receiving Plant"/>
-											<table:template><Text text="{monthly>werks}"/></table:template>
-										</table:Column>
-										<table:Column sortProperty="month" filterProperty="month"><Label text="Month"/>
-											<table:template><Text text="{monthly>month}"/></table:template>
-										</table:Column>
-										<table:Column sortProperty="pgi" filterProperty="pgi" hAlign="End"><Label text="PGI Records"/>
-											<table:template><ObjectNumber number="{monthly>pgi}"/></table:template>
-										</table:Column>
-										<table:Column sortProperty="grn" filterProperty="grn" hAlign="End"><Label text="GRN Records"/>
-											<table:template><ObjectNumber number="{monthly>grn}"/></table:template>
-										</table:Column>
-									</table:columns>
-								</table:Table>
+						<VBox class="summaryCard tablePanel">
+							<OverflowToolbar><Title text="Monthly PGI / GRN Summary" level="H3"/><ToolbarSpacer/><SearchField width="10rem" placeholder="Search plants or months" liveChange="onMonthlySearch"/><Button text="Export" icon="sap-icon://excel-attachment" press="onExportMonthly"/></OverflowToolbar>
+							<HBox class="tableContextBar" alignItems="Center"><core:Icon src="sap-icon://factory"/><Text text="{= 'Supplying plant(s): ' + ${view>/plantContext} + ' · Monthly section year: ' + ${view>/year} }"/></HBox>
+							<table:Table id="monthlyTable" width="100%" rows="{monthly>/table}" selectionMode="None" visibleRowCountMode="Auto" minAutoRowCount="8"
+								enableColumnReordering="true" showNoData="true">
+								<table:columns>
+									<table:Column sortProperty="werks" filterProperty="werks"><Label text="Receiving Plant"/>
+										<table:template><Text text="{monthly>werks}"/></table:template>
+									</table:Column>
+									<table:Column sortProperty="month" filterProperty="month"><Label text="Month"/>
+										<table:template><Text text="{monthly>month}"/></table:template>
+									</table:Column>
+									<table:Column sortProperty="pgi" filterProperty="pgi" hAlign="End"><Label text="PGI Records"/>
+										<table:template><ObjectNumber number="{monthly>pgi}"/></table:template>
+									</table:Column>
+									<table:Column sortProperty="grn" filterProperty="grn" hAlign="End"><Label text="GRN Records"/>
+										<table:template><ObjectNumber number="{monthly>grn}"/></table:template>
+									</table:Column>
+								</table:columns>
+							</table:Table>
+							<layoutData><layout:GridData span="XL7 L7 M7 S12"/></layoutData>
 						</VBox>
 					</layout:Grid>
 					<VBox visible="{view>/emptyVisible}" class="emptyState"><Title text="No data" level="H2"/><Text text="Choose one or more supplying plants, then select Go." class="mutedText"/></VBox>

@@ -11,9 +11,14 @@ html, body, #content { min-height: 100%; }
 .stoTitle { color: #fff !important; font-size: 1.8rem !important; font-weight: 700; letter-spacing: -.02em; }
 .stoSubtitle { color: #c5d6e3 !important; font-size: .95rem; margin-top: .1rem; }
 .stoHeader .sapMLabel { color: #e3edf4 !important; font-size: .8rem; font-weight: 600; }
-.stoFilters { gap: .8rem; margin-top: .75rem; }
+.stoFilters { gap: .8rem; margin-top: .8rem; }
+.filterSurface { box-sizing: border-box; padding: .75rem .85rem; border: 1px solid rgba(219,235,246,.17); border-radius: .8rem; background: rgba(255,255,255,.065); }
 .plantFilter { width: min(34rem, 100%); }
 .yearFilter { width: 14rem; }
+.yearFilter .sapMSlt { width: 100%; }
+.filterActions { flex: 0 0 auto; }
+.filterActions .sapMBtn:first-child .sapMBtnInner { min-width: 5.8rem; }
+.filterActionButtons { gap: .45rem; }
 .stoFilters .sapMInputBaseContentWrapper, .stoFilters .sapMSlt {
 	min-height: 2.55rem;
 	border: 1px solid #cbd7e0;
@@ -22,7 +27,10 @@ html, body, #content { min-height: 100%; }
 	box-shadow: 0 1px 2px rgba(7,24,39,.08);
 }
 .stoFilters .sapMInputBaseInner, .stoFilters .sapMSltLabel { color: #1d2d3e; }
-.stoFilters .sapMBtn { margin-bottom: .05rem; }
+.stoFilters .sapMBtn { margin: 0; }
+.stoFilters .sapMBtnInner { min-height: 2.55rem; padding: 0 1.1rem; border-radius: .55rem; font-weight: 700; }
+.stoFilters .sapMBtnInner.sapMBtnEmphasized { border-color: #1683f5; background: linear-gradient(135deg, #1683f5, #0064d9); box-shadow: 0 3px 8px rgba(0,82,180,.22); }
+.stoFilters .sapMBtnInner.sapMBtnTransparent { border: 1px solid rgba(220,235,246,.28); }
 .stoHeader .sapMBtnTransparent .sapMBtnContent { color: #e1edf5; }
 .stoHeader .sapMBtnTransparent:hover .sapMBtnContent { color: #fff; }
 
@@ -96,10 +104,33 @@ html, body, #content { min-height: 100%; }
 .pairedChartPane { box-sizing: border-box; width: 100%; min-width: 0; padding: .45rem .5rem; }
 .pairedChartPane > .sapMTitle { color: #1d2d3e; }
 .pairedChartPane > .sapMText { margin-bottom: .15rem; }
+.monthlyChartHeading { gap: .8rem; margin: 0 .25rem .25rem; }
+.monthlyChartHeadingCopy { min-width: 0; }
+.monthlyChartHeadingCopy > .sapMTitle { color: #1d2d3e; }
+.monthlyChartHeadingCopy > .sapMText { margin-bottom: .15rem; }
+.chartMetricToolbar.sapMOTB { flex: 0 0 auto; min-height: 2.45rem; padding: 0 .35rem; border: 1px solid #e4eaf0; border-radius: .6rem; background: #f8fafc; }
+.chartMetricToolbar .sapMObjectNumber { margin: 0 .4rem; white-space: nowrap; }
+.chartMetricToolbar .sapMObjectNumberText { font-size: .95rem; font-weight: 700; }
+.chartMetricToolbar .sapMObjectNumberUnit { font-size: .76rem; font-weight: 600; }
+.trendPgiTotal .sapMObjectNumberText, .trendPgiTotal .sapMObjectNumberUnit { color: #0a6ed1; }
+.trendGrnTotal .sapMObjectNumberText, .trendGrnTotal .sapMObjectNumberUnit { color: #e9730c; }
+.plantPgiTotal .sapMObjectNumberText, .plantPgiTotal .sapMObjectNumberUnit { color: #8b5cf6; }
+.plantGrnTotal .sapMObjectNumberText, .plantGrnTotal .sapMObjectNumberUnit { color: #00a6a6; }
+.chartLegend { gap: 1.5rem; min-height: 2.25rem; margin: .1rem .25rem .2rem; color: #435c70; }
+.chartLegendItem { gap: .4rem; }
+.chartLegendItem .sapMText { color: #435c70; font-size: .82rem; white-space: nowrap; }
+.chartLegendSwatch.sapMText { display: block; flex: 0 0 .62rem; width: .62rem; min-width: .62rem; height: .62rem; padding: 0; border-radius: 50%; font-size: 0; line-height: 0; }
+.pgiLegendSwatch { background: #0a6ed1; }
+.grnLegendSwatch { background: #e9730c; }
+.monthlyPgiLegendSwatch { background: #8b5cf6; }
+.monthlyGrnLegendSwatch { background: #00a6a6; }
 .tableSplitGrid { box-sizing: border-box; width: 100%; margin: .15rem 0 .8rem; }
 .summaryCard { box-sizing: border-box; min-width: 0; overflow: hidden; border: 1px solid #dce2e8; border-radius: .95rem; background: #fff; box-shadow: 0 2px 8px rgba(29,45,62,.05); }
 .tablePanel .sapMOTB { min-height: 3.25rem; padding: 0 .75rem; border-bottom: 1px solid #e8edf1; background: #fff; }
 .tablePanel .sapMTitle { color: #1b3449; font-size: 1rem; }
+.tableContextBar { box-sizing: border-box; gap: .45rem; min-width: 0; padding: .55rem .85rem; border-bottom: 1px solid #eef1f4; background: #f8fafb; }
+.tableContextBar .sapUiIcon { flex: 0 0 auto; color: #54738b; font-size: .8rem; }
+.tableContextBar .sapMText { overflow: hidden; color: #526d82; font-size: .78rem; text-overflow: ellipsis; white-space: nowrap; }
 .summaryCard .sapUiTable { border: 0; }
 .summaryCard .sapUiTableColHdrCnt { background: #f4f6f7; }
 .emptyState { align-items: center; padding: 3rem 1rem; }
@@ -109,8 +140,11 @@ html, body, #content { min-height: 100%; }
 	.stoHeader { padding: .9rem 1rem 1rem !important; }
 	.stoTitle { font-size: 1.55rem !important; }
 	.stoFilters { gap: .65rem; }
+	.filterSurface { padding: .65rem; }
 	.plantFilter, .yearFilter { width: 100%; margin: 0 !important; }
-	.stoFilters .sapMBtn { margin-left: 0 !important; }
+	.filterActions { width: 100%; }
+	.filterActionButtons { width: 100%; }
+	.filterActionButtons .sapMBtn:first-child { flex: 1 1 auto; }
 	.stoBody { padding: .75rem 1rem 1.5rem !important; }
 	.kpiGrid { margin: 0 -.3rem .6rem; }
 	.kpiCard { min-height: 8.3rem; margin: .3rem; }
@@ -118,6 +152,9 @@ html, body, #content { min-height: 100%; }
 	.chartCard { width: 100%; margin: .3rem 0; }
 	.pairedChartGrid { padding: .2rem; }
 	.pairedChartPane { padding: .4rem; }
+	.chartLegend { gap: 1rem; }
+	.monthlyChartHeading { align-items: flex-start; }
+	.chartMetricToolbar.sapMOTB { width: 100% !important; }
 	.tableSplitGrid { margin: 0 0 .65rem; }
 	.tablePanel { margin-bottom: .6rem; }
 	.tablePanel .sapMOTB { padding: 0 .45rem; }
