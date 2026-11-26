@@ -7,11 +7,10 @@
 				<VBox class="stoHeader sapUiResponsiveContentPadding">
 					<Title text="STO Dashboard" level="H1" class="stoTitle"/>
 					<Text text="Stock Transfer Orders: PO › PGI › GRN › MIRO" class="stoSubtitle"/>
-					<HBox wrap="Wrap" alignItems="End" class="stoFilters filterSurface">
+					<HBox wrap="Wrap" alignItems="Start" class="stoFilters filterSurface">
 						<VBox class="plantFilter">
 							<Label text="Supplying Plant" required="true" labelFor="plantInput"/>
-							<MultiInput id="plantInput" placeholder="Enter plant codes and press Enter" showValueHelp="false" tokenUpdate="onPlantTokenUpdate"
-								value="{view>/plantDraft}" submit="onPlantSubmit"/>
+							<Input id="plantInput" placeholder="Enter one supplying plant code" value="{view>/plantDraft}" submit="onPlantSubmit"/>
 						</VBox>
 						<VBox class="yearFilter">
 							<Label text="Posting Year" labelFor="yearSelect"/>
@@ -29,7 +28,7 @@
 					</HBox>
 				</VBox>
 				<VBox class="stoBody sapUiResponsiveContentPadding">
-					<layout:Grid defaultSpan="XL3 L3 M6 S12" hSpacing="1" vSpacing="1" class="kpiGrid">
+					<layout:Grid defaultSpan="XL3 L3 M6 S12" hSpacing="0" vSpacing="1" class="kpiGrid">
 						<VBox class="kpiCard kpiBlue">
 							<HBox class="kpiCardTop" alignItems="Center" justifyContent="SpaceBetween"><Title text="STO Purchase Orders" level="H4"/><core:Icon src="sap-icon://cart" class="kpiIcon" tooltip="Purchase orders"/></HBox>
 							<Text text="Aggregated from service" class="kpiDescription"/>
@@ -40,21 +39,24 @@
 							<HBox class="kpiCardTop" alignItems="Center" justifyContent="SpaceBetween"><Title text="PGI Documents" level="H4"/><core:Icon src="sap-icon://shipping-status" class="kpiIcon" tooltip="Goods issue documents"/></HBox>
 							<Text text="Goods issue at supplying plant" class="kpiDescription"/>
 							<ObjectNumber number="{view>/kpi/pgiDocs}" class="kpiNumber"/>
+							<Text text="&#160;" class="kpiFootnote kpiFootnotePlaceholder"/>
 						</VBox>
 						<VBox class="kpiCard kpiGreen">
 							<HBox class="kpiCardTop" alignItems="Center" justifyContent="SpaceBetween"><Title text="GRN Documents" level="H4"/><core:Icon src="sap-icon://inbox" class="kpiIcon" tooltip="Goods receipt documents"/></HBox>
 							<Text text="Goods receipt at receiving plant" class="kpiDescription"/>
 							<ObjectNumber number="{view>/kpi/grnDocs}" class="kpiNumber"/>
+							<Text text="&#160;" class="kpiFootnote kpiFootnotePlaceholder"/>
 						</VBox>
 						<VBox class="kpiCard kpiOrange">
 							<HBox class="kpiCardTop" alignItems="Center" justifyContent="SpaceBetween"><Title text="MIRO Documents" level="H4"/><core:Icon src="sap-icon://document-text" class="kpiIcon" tooltip="Invoice receipt documents"/></HBox>
 							<Text text="Invoice receipt" class="kpiDescription"/>
 							<ObjectNumber number="{view>/kpi/miroDocs}" class="kpiNumber"/>
+							<Text text="&#160;" class="kpiFootnote kpiFootnotePlaceholder"/>
 						</VBox>
 					</layout:Grid>
 					<VBox visible="{view>/promptVisible}" class="startCard">
 						<core:Icon src="sap-icon://filter" size="1.5rem" class="startIcon"/>
-						<VBox><Title text="Choose a supplying plant to begin" level="H3"/><Text text="Add one or more plant codes, then select Go. Plant overview and monthly trends will load in separate sections."
+						<VBox><Title text="Choose a supplying plant to begin" level="H3"/><Text text="Enter one supplying plant code, then select Go. Plant overview and monthly trends will load in separate sections."
 							class="mutedText"/></VBox>
 					</VBox>
 					<HBox width="100%" justifyContent="Center" alignItems="Center" visible="{view>/plantBusy}" class="sectionLoader"><BusyIndicator size="1.75rem"/><Text text="Loading plant overview…" class="loaderText"/></HBox>
@@ -62,7 +64,7 @@
 					<VBox visible="{view>/plantVisible}" class="sectionBlock">
 						<HBox class="sectionHeader" alignItems="Center">
 							<core:Icon src="sap-icon://factory" class="sectionHeaderIcon"/>
-							<VBox class="sectionHeading"><Title text="{view>/plantTitle}" level="H2" class="sectionTitle"/><Text text="All postings for the selected supplying plants, across all years" class="sectionSubtitle"/></VBox>
+							<VBox class="sectionHeading"><Title text="{view>/plantTitle}" level="H2" class="sectionTitle"/></VBox>
 						</HBox>
 						<layout:Grid defaultSpan="XL6 L6 M12 S12" hSpacing="1" vSpacing="1" class="pairedChartGrid">
 							<VBox class="pairedChartPane"><Title text="Receiving Plant-wise STO Records" level="H3"/><Text text="Purchase orders by receiving plant" class="mutedText"/>
@@ -115,7 +117,7 @@
 					<VBox visible="{view>/monthlyVisible}" class="sectionBlock">
 						<HBox class="sectionHeader" alignItems="Center">
 							<core:Icon src="sap-icon://calendar" class="sectionHeaderIcon"/>
-							<VBox class="sectionHeading"><Title text="{view>/monthlyTitle}" level="H2" class="sectionTitle"/><Text text="Posting year selection applies to this section only" class="sectionSubtitle"/></VBox>
+							<VBox class="sectionHeading"><Title text="{view>/monthlyTitle}" level="H2" class="sectionTitle"/></VBox>
 						</HBox>
 						<layout:Grid defaultSpan="XL12 L12 M12 S12" hSpacing="0" vSpacing="1" class="pairedChartGrid">
 							<VBox class="pairedChartPane">
@@ -189,7 +191,7 @@
 					<layout:Grid defaultSpan="XL12 L12 M12 S12" hSpacing="1" vSpacing="1" class="tableSplitGrid" visible="{view>/summaryVisible}">
 						<VBox class="summaryCard tablePanel">
 							<OverflowToolbar><Title text="Plant Summary" level="H3"/><ToolbarSpacer/><SearchField width="10rem" placeholder="Search plants" liveChange="onPlantSearch"/><Button text="Export" icon="sap-icon://excel-attachment" press="onExportPlant"/></OverflowToolbar>
-							<HBox class="tableContextBar" alignItems="Center"><core:Icon src="sap-icon://factory"/><Text text="{= 'Supplying plant(s): ' + ${view>/plantContext} + ' · Monthly section year: ' + ${view>/year} }"/></HBox>
+							<HBox class="tableContextBar" alignItems="Center"><core:Icon src="sap-icon://factory"/><Text text="{= 'Supplying plant: ' + ${view>/plantContext} + ' · Monthly section year: ' + ${view>/year} }"/></HBox>
 							<table:Table id="plantTable" width="100%" rows="{plant>/table}" selectionMode="None" visibleRowCountMode="Auto" minAutoRowCount="8"
 								enableColumnReordering="true" showNoData="true">
 								<table:columns>
@@ -208,7 +210,7 @@
 						</VBox>
 						<VBox class="summaryCard tablePanel">
 							<OverflowToolbar><Title text="Monthly PGI / GRN Summary" level="H3"/><ToolbarSpacer/><SearchField width="10rem" placeholder="Search plants or months" liveChange="onMonthlySearch"/><Button text="Export" icon="sap-icon://excel-attachment" press="onExportMonthly"/></OverflowToolbar>
-							<HBox class="tableContextBar" alignItems="Center"><core:Icon src="sap-icon://factory"/><Text text="{= 'Supplying plant(s): ' + ${view>/plantContext} + ' · Monthly section year: ' + ${view>/year} }"/></HBox>
+							<HBox class="tableContextBar" alignItems="Center"><core:Icon src="sap-icon://factory"/><Text text="{= 'Supplying plant: ' + ${view>/plantContext} + ' · Monthly section year: ' + ${view>/year} }"/></HBox>
 							<table:Table id="monthlyTable" width="100%" rows="{monthly>/table}" selectionMode="None" visibleRowCountMode="Auto" minAutoRowCount="8"
 								enableColumnReordering="true" showNoData="true">
 								<table:columns>
@@ -229,7 +231,7 @@
 							<layoutData><layout:GridData span="XL7 L7 M7 S12"/></layoutData>
 						</VBox>
 					</layout:Grid>
-					<VBox visible="{view>/emptyVisible}" class="emptyState"><Title text="No data" level="H2"/><Text text="Choose one or more supplying plants, then select Go." class="mutedText"/></VBox>
+					<VBox visible="{view>/emptyVisible}" class="emptyState"><Title text="No data" level="H2"/><Text text="Choose a supplying plant, then select Go." class="mutedText"/></VBox>
 				</VBox>
 			</content>
 		</Page>

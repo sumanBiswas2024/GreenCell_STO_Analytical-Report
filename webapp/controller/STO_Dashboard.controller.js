@@ -45,7 +45,7 @@ sap.ui.define([
 				monthlyTitle: "Monthly STO Analysis",
 				kpi: {
 					po: "–",
-					plantCaption: "Select supplying plant(s)",
+					plantCaption: "Select supplying plant",
 					pgiDocs: "–",
 					grnDocs: "–",
 					miroDocs: "–"
@@ -66,7 +66,7 @@ sap.ui.define([
 				},
 				table: []
 			}), "monthly");
-			this._committedPlants = [];
+			this._committedPlant = "";
 			this._plantLoaded = false;
 			this._monthlyLoaded = false;
 			this._chartPopoverById = {};
@@ -113,64 +113,31 @@ sap.ui.define([
 
 		onPlantSubmit: function(oEvent) {
 			var input = oEvent.getSource();
-			var value = (oEvent.getParameter("value") || "").trim();
-			if (value) {
-				value.split(/[;,\s]+/).filter(Boolean).forEach(function(code) {
-					if (!input.getTokens().some(function(token) {
-							return token.getKey().toUpperCase() === code.toUpperCase();
-						})) {
-						input.addToken(new sap.m.Token({
-							key: code.toUpperCase(),
-							text: code.toUpperCase()
-						}));
-					}
-				});
-				input.setValue("");
-			}
+			var plant = input.getValue().trim().toUpperCase();
+			input.setValue(plant);
+			this._viewModel.setProperty("/plantDraft", plant);
 		},
-
-		onPlantTokenUpdate: function() {},
 
 		onGo: function() {
 			var input = this.byId("plantInput");
-			var tokens = input.getTokens();
-			var plants = tokens.map(function(token) {
-				return token.getKey().trim();
-			}).filter(Boolean);
-			// MultiInput does not guarantee that typed text became a token before Go was pressed.
-			var draft = input.getValue() || this._viewModel.getProperty("/plantDraft") || "";
-			draft.split(/[;,\s]+/).map(function(value) {
-				return value.trim();
-			}).filter(Boolean).forEach(function(code) {
-				plants.push(code);
-			});
-			plants = plants.map(function(code) {
-				return code.toUpperCase();
-			});
-			plants = plants.filter(function(value, index, all) {
-				return all.indexOf(value) === index;
-			});
-			if (!plants.length) {
+			var plant = (input.getValue() || this._viewModel.getProperty("/plantDraft") || "").trim().toUpperCase();
+			if (!plant) {
 				input.setValueState("Error");
-				input.setValueStateText("Enter at least one supplying plant code.");
-				MessageToast.show("Enter at least one supplying plant code.");
+				input.setValueStateText("Enter one supplying plant code.");
+				MessageToast.show("Enter one supplying plant code.");
+				return;
+			}
+			if (/[;,\s]/.test(plant)) {
+				input.setValueState("Error");
+				input.setValueStateText("Enter only one supplying plant code.");
+				MessageToast.show("Only one supplying plant can be entered.");
 				return;
 			}
 			input.setValueState("None");
-			input.setValue("");
-			this._viewModel.setProperty("/plantDraft", "");
-			plants.forEach(function(code) {
-				if (!input.getTokens().some(function(token) {
-						return token.getKey().toUpperCase() === code;
-					})) {
-					input.addToken(new sap.m.Token({
-						key: code,
-						text: code
-					}));
-				}
-			});
-			this._committedPlants = plants;
-			this._viewModel.setProperty("/plantContext", plants.join(", "));
+			input.setValue(plant);
+			this._viewModel.setProperty("/plantDraft", plant);
+			this._committedPlant = plant;
+			this._viewModel.setProperty("/plantContext", plant);
 			this._updateSectionTitles();
 			this._plantLoaded = false;
 			this._monthlyLoaded = false;
@@ -203,35 +170,36 @@ sap.ui.define([
 			this._viewModel.setProperty("/kpi/pgiDocs", "–");
 			this._viewModel.setProperty("/kpi/grnDocs", "–");
 			this._viewModel.setProperty("/kpi/miroDocs", "–");
-			this._loadPlantSection(plants);
-			this._loadMonthlySection(plants, this._viewModel.getProperty("/year"));
+			this._loadPlantSection(plant);
+			this._loadMonthlySection(plant, this._viewModel.getProperty("/year"));
 		},
 
 		onYearChange: function(oEvent) {
 			var year = oEvent.getSource().getSelectedKey();
 			this._viewModel.setProperty("/year", year);
 			this._updateSectionTitles();
-			if (this._committedPlants.length) {
+			if (this._committedPlant) {
 				this._viewModel.setProperty("/monthlyBusy", true);
 				this._viewModel.setProperty("/monthlyVisible", false);
 				this._viewModel.setProperty("/emptyVisible", false);
-				this._loadMonthlySection(this._committedPlants, year);
+				this._loadMonthlySection(this._committedPlant, year);
 			}
 		},
 
 		_updateSectionTitles: function() {
-			var plants = this._committedPlants.join(", ");
+			var plant = this._committedPlant;
 			var year = this._viewModel.getProperty("/year");
-			this._viewModel.setProperty("/plantTitle", plants ? "Plant-wise STO Overview · Plants " + plants + " · Year " + year : "Plant-wise STO Overview");
-			// this._viewModel.setProperty("/monthlyTitle", "Monthly STO Analysis" + year + (plants ? " · Plants " + plants : ""));
-			this._viewModel.setProperty("/monthlyTitle", plants ? "Monthly STO Analysis · Plants " + plants + " · Year " + year : "");
+			this._viewModel.setProperty("/plantTitle", plant ? "Plant-wise STO Overview · " + plant + " · Year " + year :
+				"Plant-wise STO Overview");
+			this._viewModel.setProperty("/monthlyTitle", plant ? "Monthly STO Analysis · " + plant + " · Year " + year :
+				"Monthly STO Analysis – " + year);
 		},
 
 		onClear: function() {
-			this.byId("plantInput").removeAllTokens();
 			this.byId("plantInput").setValue("");
 			this.byId("plantInput").setValueState("None");
-			this._committedPlants = [];
+			this._viewModel.setProperty("/plantDraft", "");
+			this._committedPlant = "";
 			this._updateSectionTitles();
 			this._plantRequestId = (this._plantRequestId || 0) + 1;
 			this._monthlyRequestId = (this._monthlyRequestId || 0) + 1;
@@ -248,7 +216,7 @@ sap.ui.define([
 			this._viewModel.setProperty("/plantError", "");
 			this._viewModel.setProperty("/monthlyError", "");
 			this._viewModel.setProperty("/kpi/po", "–");
-			this._viewModel.setProperty("/kpi/plantCaption", "Select supplying plant(s)");
+			this._viewModel.setProperty("/kpi/plantCaption", "Select supplying plant");
 			this._viewModel.setProperty("/plantDraft", "");
 			this._viewModel.setProperty("/plantContext", "—");
 			this._viewModel.setProperty("/kpi/pgiDocs", "–");
@@ -270,7 +238,7 @@ sap.ui.define([
 			});
 		},
 
-		_loadPlantSection: function(plants) {
+		_loadPlantSection: function(plant) {
 			var that = this;
 			var model = this.getView().getModel();
 			var requestId = (this._plantRequestId || 0) + 1;
@@ -280,7 +248,7 @@ sap.ui.define([
 					return;
 				}
 				var entity = meta.plant;
-				var filters = [that._multiPlantFilter(entity, plants)];
+				var filters = [new Filter(entity.fields.reswk, FilterOperator.EQ, plant)];
 				model.read("/" + entity.set, {
 					filters: filters,
 					success: function(result) {
@@ -333,7 +301,7 @@ sap.ui.define([
 			});
 		},
 
-		_loadMonthlySection: function(plants, year) {
+		_loadMonthlySection: function(plant, year) {
 			var that = this;
 			var model = this.getView().getModel();
 			var requestId = (this._monthlyRequestId || 0) + 1;
@@ -355,7 +323,8 @@ sap.ui.define([
 					return;
 				}
 				var entity = meta.monthly;
-				var filters = [that._multiPlantFilter(entity, plants), new Filter(entity.fields.mjahr, FilterOperator.EQ, year)];
+				var filters = [new Filter(entity.fields.reswk, FilterOperator.EQ, plant), new Filter(entity.fields.mjahr, FilterOperator.EQ,
+					year)];
 				model.read("/" + entity.set, {
 					filters: filters,
 					success: function(result) {
@@ -437,16 +406,6 @@ sap.ui.define([
 				properties: properties,
 				fields: fields
 			};
-		},
-
-		_multiPlantFilter: function(entity, plants) {
-			var filters = plants.map(function(plant) {
-				return new Filter(entity.fields.reswk, FilterOperator.EQ, plant);
-			});
-			return filters.length === 1 ? filters[0] : new Filter({
-				filters: filters,
-				and: false
-			});
 		},
 
 		_normalizePlantRow: function(row, entity) {
