@@ -1,1 +1,121 @@
-/* Enter your custom styles here */
+html, body, #content { min-height: 100%; }
+.stoPage, .stoPage .sapMPageBgStandard { background: #f1f4f7; }
+
+/* Compact branded filter header */
+.stoHeader {
+	background: linear-gradient(112deg, #10283d 0%, #153b56 58%, #1d5366 100%);
+	border-bottom: 3px solid #37a47a;
+	padding: 1rem 1.5rem 1.05rem !important;
+	box-shadow: 0 4px 16px rgba(16,40,61,.12);
+}
+.stoTitle { color: #fff !important; font-size: 1.8rem !important; font-weight: 700; letter-spacing: -.02em; }
+.stoSubtitle { color: #c5d6e3 !important; font-size: .95rem; margin-top: .1rem; }
+.stoHeader .sapMLabel { color: #e3edf4 !important; font-size: .8rem; font-weight: 600; }
+.stoFilters { gap: .8rem; margin-top: .75rem; }
+.plantFilter { width: min(34rem, 100%); }
+.yearFilter { width: 14rem; }
+.stoFilters .sapMInputBaseContentWrapper, .stoFilters .sapMSlt {
+	min-height: 2.55rem;
+	border: 1px solid #cbd7e0;
+	border-radius: .55rem;
+	background: #fff;
+	box-shadow: 0 1px 2px rgba(7,24,39,.08);
+}
+.stoFilters .sapMInputBaseInner, .stoFilters .sapMSltLabel { color: #1d2d3e; }
+.stoFilters .sapMBtn { margin-bottom: .05rem; }
+.stoHeader .sapMBtnTransparent .sapMBtnContent { color: #e1edf5; }
+.stoHeader .sapMBtnTransparent:hover .sapMBtnContent { color: #fff; }
+
+.stoBody { padding: 1rem 1.3rem 2rem !important; }
+.kpiGrid { margin: 0 -.4rem .8rem; }
+.kpiCard {
+	position: relative;
+	box-sizing: border-box;
+	min-height: 9rem;
+	margin: .4rem;
+	padding: .8rem .95rem .75rem 1rem;
+	border: 1px solid #e0e7ed;
+	border-left: 4px solid #0070f2;
+	border-radius: .85rem;
+	background: #fff;
+	box-shadow: 0 4px 14px rgba(23,46,67,.065), 0 1px 2px rgba(23,46,67,.035);
+	transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.kpiCard:hover { transform: translateY(-2px); box-shadow: 0 9px 22px rgba(23,46,67,.11); }
+.kpiCardTop { min-height: 2.35rem; }
+.kpiCardTop .sapMTitle { margin: 0; color: #20364a; font-size: .94rem; font-weight: 700; letter-spacing: .005em; }
+.kpiDescription { margin-top: .15rem; color: #708398 !important; font-size: .77rem; }
+.kpiFootnote { margin-top: auto; color: #637a8e !important; font-size: .75rem; }
+.kpiIcon { box-sizing: border-box; width: 2.35rem; height: 2.35rem; padding: .62rem; border-radius: .72rem; font-size: 1.1rem; }
+.kpiBlue { border-left-color: #0877e8; background: linear-gradient(135deg, #eaf4ff 0%, #fff 76%); }
+.kpiCyan { border-left-color: #1597c9; background: linear-gradient(135deg, #e8f8fc 0%, #fff 76%); }
+.kpiGreen { border-left-color: #2a9b69; background: linear-gradient(135deg, #eaf7ef 0%, #fff 76%); }
+.kpiOrange { border-left-color: #e77a28; background: linear-gradient(135deg, #fff3e8 0%, #fff 76%); }
+.kpiBlue .kpiIcon { color: #0871cf; background: #e8f3ff; }
+.kpiCyan .kpiIcon { color: #0783b5; background: #e5f7fc; }
+.kpiGreen .kpiIcon { color: #21834f; background: #e7f6ed; }
+.kpiOrange .kpiIcon { color: #cc681b; background: #fff1e5; }
+.kpiNumber {
+	display: block;
+	min-height: 2.45rem;
+	margin: .25rem 0 .12rem;
+	line-height: 2.45rem;
+	overflow: visible;
+}
+.kpiNumber .sapMObjectNumberText {
+	display: inline-block;
+	color: #172f44;
+	font-size: 2.15rem;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+	line-height: 2.45rem;
+	vertical-align: middle;
+}
+.kpiBlue .sapMObjectNumberText { color: #0769c6; }
+.kpiCyan .sapMObjectNumberText { color: #087fae; }
+.kpiGreen .sapMObjectNumberText { color: #20804e; }
+.kpiOrange .sapMObjectNumberText { color: #ba5c16; }
+
+.sectionLoader { gap: .7rem; min-height: 4rem; margin: .65rem 0; color: #526d82; }
+.loaderText { color: #526d82 !important; font-size: .9rem; }
+
+.sectionBlock { width: 100%; margin: 1rem 0 1.2rem; }
+.sectionHeader { gap: .85rem; margin: .15rem 0 1rem; }
+.sectionHeaderIcon { display: inline-block; box-sizing: border-box; width: 2.8rem; height: 2.8rem; padding: .72rem; border-radius: .85rem; color: #16835e; background: #e3f3eb; font-size: 1.3rem; }
+.sectionHeading { min-width: 0; }
+.sectionTitle.sapMTitle { margin: 0; color: #1b3449; font-size: 1.35rem; font-weight: 700; line-height: 1.55rem; }
+.sectionSubtitle { margin: .22rem 0 0; color: #60778b !important; font-size: .88rem; line-height: 1.25rem; }
+.startCard { display: flex; flex-direction: row; align-items: center; gap: 1rem; margin: 1.2rem 0; padding: 1.25rem 1.4rem; border: 1px solid #dce5ec; border-radius: .95rem; background: linear-gradient(115deg, #fff 0%, #f3f8ff 100%); box-shadow: 0 2px 8px rgba(29,45,62,.055); }
+.startIcon { flex: 0 0 auto; box-sizing: content-box; padding: .85rem; border-radius: 50%; color: #0070f2; background: #e7f1ff; }
+.summaryCard .sapMITBText { max-width: 15rem !important; }
+.chartCard { box-sizing: border-box; min-width: 0; width: calc(100% - .8rem); margin: .4rem; padding: .85rem .9rem .55rem; border: 1px solid #dce4ea; border-radius: .95rem; background: #fff; box-shadow: 0 2px 8px rgba(29,45,62,.05); }
+.chartCard > .sapMTitle { color: #1d2d3e; }
+.chartTools { display: block; box-sizing: border-box; width: 100%; min-width: 0; overflow: hidden; border-radius: .65rem; }
+.chartTools .sapMOTB { min-height: 2.6rem; padding: 0 .35rem; border: 0; border-bottom: 1px solid #edf1f4; background: #f8fafc; }
+.chartTools .sapMBtnInner { border-radius: .45rem; }
+.summaryCard { overflow: hidden; border: 1px solid #dce2e8; border-radius: .95rem; background: #fff; box-shadow: 0 2px 8px rgba(29,45,62,.05); }
+.summaryCard .sapMITBHead { padding-left: 1rem; }
+.summaryCard .sapMITBContainerContent { border-top: 1px solid #e4e8eb; }
+.summaryCard .sapMOTB { border-bottom: 0; }
+.summaryCard .sapUiTable { border: 0; }
+.summaryCard .sapUiTableColHdrCnt { background: #f4f6f7; }
+.emptyState { align-items: center; padding: 3rem 1rem; }
+.emptyState .sapMTitle { margin-bottom: .5rem; }
+
+@media (max-width: 600px) {
+	.stoHeader { padding: .9rem 1rem 1rem !important; }
+	.stoTitle { font-size: 1.55rem !important; }
+	.stoFilters { gap: .65rem; }
+	.plantFilter, .yearFilter { width: 100%; margin: 0 !important; }
+	.stoFilters .sapMBtn { margin-left: 0 !important; }
+	.stoBody { padding: .75rem 1rem 1.5rem !important; }
+	.kpiGrid { margin: 0 -.3rem .6rem; }
+	.kpiCard { min-height: 8.3rem; margin: .3rem; }
+	.chartCard { margin: .3rem 0; padding: .8rem; }
+	.chartCard { width: 100%; }
+	.sectionHeader { gap: .65rem; margin-bottom: .8rem; }
+	.sectionHeaderIcon { width: 2.5rem; height: 2.5rem; padding: .63rem; }
+	.sectionTitle.sapMTitle { font-size: 1.18rem; line-height: 1.4rem; }
+	.sectionSubtitle { font-size: .82rem; }
+	.startCard { align-items: flex-start; padding: 1rem; }
+}

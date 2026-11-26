@@ -39,10 +39,7 @@
 			"tablet": true,
 			"phone": true
 		},
-		"supportedThemes": [
-			"sap_hcb",
-			"sap_belize"
-		]
+		"supportedThemes": ["sap_horizon", "sap_horizon_dark", "sap_horizon_hcb", "sap_horizon_hcw"]
 	},
 	"sap.ui5": {
 		"rootView": {
@@ -50,14 +47,18 @@
 			"type": "XML"
 		},
 		"dependencies": {
-			"minUI5Version": "1.30.0",
+			"minUI5Version": "1.108.0",
 			"libs": {
-				"sap.ui.core": {},
+				"sap.collaboration": {},
 				"sap.m": {},
+				"sap.ui.table": {},
+				"sap.ui.export": {},
+				"sap.viz": {},
+				"sap.suite.ui.commons": {},
+				"sap.ui.comp": {},
+				"sap.ui.core": {},
 				"sap.ui.layout": {},
 				"sap.ushell": {},
-				"sap.collaboration": {},
-				"sap.ui.comp": {},
 				"sap.uxap": {}
 			}
 		},
@@ -66,6 +67,11 @@
 			"cozy": true
 		},
 		"models": {
+			"": {
+				"dataSource": "ZO_STO_SRV",
+				"preload": true,
+				"settings": {"defaultBindingMode": "OneWay", "useBatch": true}
+			},
 			"i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {
@@ -80,5 +86,9 @@
 				}
 			]
 		}
+	},
+	"sap.platform.abap": {
+		"uri": "/sap/bc/ui5_ui5/sap/zbsp_sto/webapp",
+		"_version": "1.1.0"
 	}
 }

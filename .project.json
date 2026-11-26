@@ -32,7 +32,8 @@
     "sourceFolder": "webapp",
     "targetFolder": "dist",
     "excludedFolders": [],
-    "excludedFiles": []
+    "excludedFiles": [],
+    "lastBuildDateTime": "Thu, 26 Nov 2026 07:15:23 GMT"
   },
   "basevalidator": {
     "services": {
@@ -52,5 +53,9 @@
     "loadJSONFiles": false,
     "loadCustomRequests": false,
     "mockRequestsFilePath": ""
+  },
+  "deploy": {
+    "destination": "GreenCell",
+    "name": "ZBSP_STO"
   }
 }

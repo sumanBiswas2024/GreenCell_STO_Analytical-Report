@@ -1,10 +1,214 @@
-<mvc:View controllerName="Z_STO_Report_GC.controller.STO_Dashboard" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc"
-	displayBlock="true" xmlns="sap.m">
+<mvc:View controllerName="Z_STO_Report_GC.controller.STO_Dashboard" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core"
+	xmlns:layout="sap.ui.layout" xmlns:chart="sap.suite.ui.commons" xmlns:viz="sap.viz.ui5.controls" xmlns:viz.data="sap.viz.ui5.data"
+	xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds" xmlns:table="sap.ui.table" displayBlock="true">
 	<App>
-		<pages>
-			<Page title="{i18n>title}">
-				<content></content>
-			</Page>
-		</pages>
+		<Page showHeader="false" enableScrolling="true" class="stoPage">
+			<content>
+				<VBox class="stoHeader sapUiResponsiveContentPadding">
+					<Title text="Green Cell STO Report" level="H1" class="stoTitle"/>
+					<Text text="Stock Transfer Orders: PO › PGI › GRN › MIRO" class="stoSubtitle"/>
+					<HBox wrap="Wrap" alignItems="End" class="stoFilters">
+						<VBox class="plantFilter">
+							<Label text="Supplying Plant" required="true" labelFor="plantInput"/>
+							<MultiInput id="plantInput" placeholder="Enter plant codes and press Enter" showValueHelp="false" tokenUpdate="onPlantTokenUpdate"
+								value="{view>/plantDraft}" submit="onPlantSubmit"/>
+						</VBox>
+						<VBox class="yearFilter sapUiSmallMarginBegin">
+							<Label text="Posting Year (monthly section)" labelFor="yearSelect"/>
+							<Select id="yearSelect" selectedKey="{view>/year}" items="{view>/years}" change="onYearChange">
+								<core:Item key="{view>key}" text="{view>text}"/>
+							</Select>
+						</VBox>
+						<Button text="Go" type="Emphasized" press="onGo" class="sapUiSmallMarginBegin"/>
+						<Button text="Clear" type="Transparent" press="onClear" class="sapUiSmallMarginBegin"/>
+					</HBox>
+				</VBox>
+				<VBox class="stoBody sapUiResponsiveContentPadding">
+					<layout:Grid defaultSpan="XL3 L3 M6 S12" hSpacing="1" vSpacing="1" class="kpiGrid">
+						<VBox class="kpiCard kpiBlue">
+							<HBox class="kpiCardTop" alignItems="Center" justifyContent="SpaceBetween"><Title text="STO Purchase Orders" level="H4"/><core:Icon src="sap-icon://cart" class="kpiIcon" tooltip="Purchase orders"/></HBox>
+							<Text text="Aggregated from service" class="kpiDescription"/>
+							<ObjectNumber number="{view>/kpi/po}" class="kpiNumber"/>
+							<Text text="{view>/kpi/plantCaption}" class="kpiFootnote"/>
+						</VBox>
+						<VBox class="kpiCard kpiCyan">
+							<HBox class="kpiCardTop" alignItems="Center" justifyContent="SpaceBetween"><Title text="PGI Documents" level="H4"/><core:Icon src="sap-icon://shipping-status" class="kpiIcon" tooltip="Goods issue documents"/></HBox>
+							<Text text="Goods issue at supplying plant" class="kpiDescription"/>
+							<ObjectNumber number="{view>/kpi/pgiDocs}" class="kpiNumber"/>
+						</VBox>
+						<VBox class="kpiCard kpiGreen">
+							<HBox class="kpiCardTop" alignItems="Center" justifyContent="SpaceBetween"><Title text="GRN Documents" level="H4"/><core:Icon src="sap-icon://inbox" class="kpiIcon" tooltip="Goods receipt documents"/></HBox>
+							<Text text="Goods receipt at receiving plant" class="kpiDescription"/>
+							<ObjectNumber number="{view>/kpi/grnDocs}" class="kpiNumber"/>
+						</VBox>
+						<VBox class="kpiCard kpiOrange">
+							<HBox class="kpiCardTop" alignItems="Center" justifyContent="SpaceBetween"><Title text="MIRO Documents" level="H4"/><core:Icon src="sap-icon://document-text" class="kpiIcon" tooltip="Invoice receipt documents"/></HBox>
+							<Text text="Invoice receipt" class="kpiDescription"/>
+							<ObjectNumber number="{view>/kpi/miroDocs}" class="kpiNumber"/>
+						</VBox>
+					</layout:Grid>
+					<VBox visible="{view>/promptVisible}" class="startCard">
+						<core:Icon src="sap-icon://filter" size="1.5rem" class="startIcon"/>
+						<VBox><Title text="Choose a supplying plant to begin" level="H3"/><Text text="Add one or more plant codes, then select Go. Plant overview and monthly trends will load in separate sections."
+							class="mutedText"/></VBox>
+					</VBox>
+					<HBox width="100%" justifyContent="Center" alignItems="Center" visible="{view>/plantBusy}" class="sectionLoader"><BusyIndicator size="1.75rem"/><Text text="Loading plant overview…" class="loaderText"/></HBox>
+					<MessageStrip text="{view>/plantError}" type="Error" showIcon="true" visible="{= !!${view>/plantError} }" class="sapUiSmallMarginTop"/>
+					<VBox visible="{view>/plantVisible}" class="sectionBlock">
+						<HBox class="sectionHeader" alignItems="Center">
+							<core:Icon src="sap-icon://factory" class="sectionHeaderIcon"/>
+							<VBox class="sectionHeading"><Title text="Plant-wise STO Overview" level="H2" class="sectionTitle"/><Text text="All postings for the selected supplying plants, across all years" class="sectionSubtitle"/></VBox>
+						</HBox>
+						<layout:Grid defaultSpan="XL6 L6 M12 S12" hSpacing="1" vSpacing="1">
+							<VBox class="chartCard"><Title text="Receiving Plant-wise STO Records" level="H3"/><Text text="Purchase orders by receiving plant" class="mutedText"/>
+								<chart:ChartContainer showFullScreen="true" showPersonalization="false" showZoom="true" showLegendButton="false" showSelectionDetails="true"
+									class="chartTools">
+									<chart:content>
+										<chart:ChartContainerContent title="STO records by receiving plant" icon="sap-icon://bar-chart">
+											<chart:content>
+												<viz:VizFrame id="plantPoChart" vizType="bar" width="100%" height="22rem" uiConfig="{applicationSet:'fiori'}"
+													renderComplete="onChartRenderComplete" vizProperties="{title:{visible:false},plotArea:{dataLabel:{visible:true}},legend:{visible:false}}">
+													<viz:dataset>
+														<viz.data:FlattenedDataset data="{plant>/byPlant}">
+															<viz.data:dimensions><viz.data:DimensionDefinition name="Receiving Plant" value="{plant>werks}"/></viz.data:dimensions>
+															<viz.data:measures><viz.data:MeasureDefinition name="No. of PO" value="{plant>po}"/></viz.data:measures>
+														</viz.data:FlattenedDataset>
+													</viz:dataset>
+													<viz:feeds><viz.feeds:FeedItem uid="valueAxis" type="Measure" values="No. of PO"/><viz.feeds:FeedItem uid="categoryAxis" type="Dimension" values="Receiving Plant"/></viz:feeds>
+												</viz:VizFrame>
+											</chart:content>
+										</chart:ChartContainerContent>
+									</chart:content>
+								</chart:ChartContainer>
+							</VBox>
+							<VBox class="chartCard"><Title text="Receiving Plant-wise PGI Value" level="H3"/><Text text="PGI value in INR Lakh" class="mutedText"/>
+								<chart:ChartContainer showFullScreen="true" showPersonalization="false" showZoom="true" showLegendButton="false" showSelectionDetails="true"
+									class="chartTools">
+									<chart:content>
+										<chart:ChartContainerContent title="PGI value by receiving plant" icon="sap-icon://pie-chart">
+											<chart:content>
+												<viz:VizFrame id="plantValueChart" vizType="donut" width="100%" height="22rem" uiConfig="{applicationSet:'fiori'}"
+													renderComplete="onChartRenderComplete"
+													vizProperties="{title:{visible:false},plotArea:{dataLabel:{visible:true,type:'percentage'}},legend:{visible:true,position:'right'}}">
+													<viz:dataset>
+														<viz.data:FlattenedDataset data="{plant>/byValue}">
+															<viz.data:dimensions><viz.data:DimensionDefinition name="Receiving Plant · PGI Value (INR Lakh)" value="{plant>legendLabel}"/></viz.data:dimensions>
+															<viz.data:measures><viz.data:MeasureDefinition name="PGI Value (INR Lakh)" value="{plant>value}"/></viz.data:measures>
+														</viz.data:FlattenedDataset>
+													</viz:dataset>
+													<viz:feeds><viz.feeds:FeedItem uid="size" type="Measure" values="PGI Value (INR Lakh)"/><viz.feeds:FeedItem uid="color" type="Dimension" values="Receiving Plant · PGI Value (INR Lakh)"/></viz:feeds>
+												</viz:VizFrame>
+											</chart:content>
+										</chart:ChartContainerContent>
+									</chart:content>
+								</chart:ChartContainer>
+							</VBox>
+						</layout:Grid>
+					</VBox>
+					<HBox width="100%" justifyContent="Center" alignItems="Center" visible="{view>/monthlyBusy}" class="sectionLoader"><BusyIndicator size="1.75rem"/><Text text="Loading monthly analysis…" class="loaderText"/></HBox>
+					<MessageStrip text="{view>/monthlyError}" type="Error" showIcon="true" visible="{= !!${view>/monthlyError} }" class="sapUiSmallMarginTop"/>
+					<VBox visible="{view>/monthlyVisible}" class="sectionBlock">
+						<HBox class="sectionHeader" alignItems="Center">
+							<core:Icon src="sap-icon://calendar" class="sectionHeaderIcon"/>
+							<VBox class="sectionHeading"><Title text="{view>/monthlyTitle}" level="H2" class="sectionTitle"/><Text text="Posting year selection applies to this section only" class="sectionSubtitle"/></VBox>
+						</HBox>
+						<layout:Grid defaultSpan="XL6 L6 M12 S12" hSpacing="1" vSpacing="1">
+							<VBox class="chartCard"><Title text="Monthly STO Trend Analysis" level="H3"/><Text text="PGI and GRN records by posting month" class="mutedText"/>
+								<chart:ChartContainer showFullScreen="true" showPersonalization="false" showZoom="true" showLegendButton="false" showSelectionDetails="true"
+									class="chartTools">
+									<chart:content>
+										<chart:ChartContainerContent title="Monthly PGI and GRN trend" icon="sap-icon://line-chart">
+											<chart:content>
+												<viz:VizFrame id="monthlyTrendChart" vizType="column" width="100%" height="22rem" uiConfig="{applicationSet:'fiori'}"
+													renderComplete="onChartRenderComplete"
+													vizProperties="{title:{visible:false},plotArea:{dataLabel:{visible:true}},legend:{visible:true,position:'top'}}">
+													<viz:dataset>
+														<viz.data:FlattenedDataset data="{monthly>/byMonth}">
+															<viz.data:dimensions><viz.data:DimensionDefinition name="Month" value="{monthly>month}"/></viz.data:dimensions>
+															<viz.data:measures><viz.data:MeasureDefinition name="PGI records" value="{monthly>pgi}"/><viz.data:MeasureDefinition name="GRN records" value="{monthly>grn}"/></viz.data:measures>
+														</viz.data:FlattenedDataset>
+													</viz:dataset>
+													<viz:feeds><viz.feeds:FeedItem uid="valueAxis" type="Measure" values="PGI records,GRN records"/><viz.feeds:FeedItem uid="categoryAxis" type="Dimension" values="Month"/></viz:feeds>
+												</viz:VizFrame>
+											</chart:content>
+										</chart:ChartContainerContent>
+									</chart:content>
+								</chart:ChartContainer>
+							</VBox>
+							<VBox class="chartCard"><Title text="Receiving Plant-wise PGI vs GRN" level="H3"/><Text text="Document counts by receiving plant" class="mutedText"/>
+								<chart:ChartContainer showFullScreen="true" showPersonalization="false" showZoom="true" showLegendButton="false" showSelectionDetails="true"
+									class="chartTools">
+									<chart:content>
+										<chart:ChartContainerContent title="PGI and GRN by receiving plant" icon="sap-icon://bar-chart">
+											<chart:content>
+												<viz:VizFrame id="monthlyPlantChart" vizType="column" width="100%" height="22rem" uiConfig="{applicationSet:'fiori'}"
+													renderComplete="onChartRenderComplete"
+													vizProperties="{title:{visible:false},plotArea:{dataLabel:{visible:true}},legend:{visible:true,position:'top'}}">
+													<viz:dataset>
+														<viz.data:FlattenedDataset data="{monthly>/byMonthlyPlant}">
+															<viz.data:dimensions><viz.data:DimensionDefinition name="Receiving Plant" value="{monthly>werks}"/></viz.data:dimensions>
+															<viz.data:measures><viz.data:MeasureDefinition name="PGI records" value="{monthly>pgi}"/><viz.data:MeasureDefinition name="GRN records" value="{monthly>grn}"/></viz.data:measures>
+														</viz.data:FlattenedDataset>
+													</viz:dataset>
+													<viz:feeds><viz.feeds:FeedItem uid="valueAxis" type="Measure" values="PGI records,GRN records"/><viz.feeds:FeedItem uid="categoryAxis" type="Dimension" values="Receiving Plant"/></viz:feeds>
+												</viz:VizFrame>
+											</chart:content>
+										</chart:ChartContainerContent>
+									</chart:content>
+								</chart:ChartContainer>
+							</VBox>
+						</layout:Grid>
+					</VBox>
+					<IconTabBar id="summaryTabs" class="summaryCard" expandable="false" selectedKey="plant" visible="{view>/summaryVisible}">
+						<items>
+							<IconTabFilter key="plant" text="Plant Summary" icon="sap-icon://factory">
+								<OverflowToolbar><Title text="Plant Summary" level="H3"/><ToolbarSpacer/><SearchField width="18rem" placeholder="Search plants" liveChange="onPlantSearch"/><Button text="Export" icon="sap-icon://excel-attachment" press="onExportPlant"/></OverflowToolbar>
+								<table:Table id="plantTable" rows="{plant>/table}" selectionMode="None" visibleRowCountMode="Auto" minAutoRowCount="4"
+									enableColumnReordering="true" showNoData="true">
+									<table:columns>
+										<table:Column sortProperty="werks" filterProperty="werks"><Label text="Receiving Plant"/>
+											<table:template><Text text="{plant>werks}"/></table:template>
+										</table:Column>
+										<table:Column sortProperty="reswk" filterProperty="reswk"><Label text="Supplying Plant"/>
+											<table:template><Text text="{plant>reswk}"/></table:template>
+										</table:Column>
+										<table:Column sortProperty="po" filterProperty="po" hAlign="End"><Label text="STO POs"/>
+											<table:template><ObjectNumber number="{plant>po}"/></table:template>
+										</table:Column>
+										<table:Column sortProperty="value" filterProperty="value" hAlign="End"><Label text="PGI Value (INR Lakh)"/>
+											<table:template><ObjectNumber number="{plant>value}"/></table:template>
+										</table:Column>
+										<table:Column sortProperty="budat" filterProperty="budat"><Label text="Posting Date"/>
+											<table:template><Text text="{plant>budat}"/></table:template>
+										</table:Column>
+									</table:columns>
+								</table:Table>
+							</IconTabFilter>
+							<IconTabFilter key="monthly" text="Monthly PGI / GRN Summary" icon="sap-icon://calendar">
+								<OverflowToolbar><Title text="Monthly PGI / GRN Summary" level="H3"/><ToolbarSpacer/><SearchField width="18rem" placeholder="Search plants or months" liveChange="onMonthlySearch"/><Button text="Export" icon="sap-icon://excel-attachment" press="onExportMonthly"/></OverflowToolbar>
+								<table:Table id="monthlyTable" rows="{monthly>/table}" selectionMode="None" visibleRowCountMode="Auto" minAutoRowCount="4"
+									enableColumnReordering="true" showNoData="true">
+									<table:columns>
+										<table:Column sortProperty="werks" filterProperty="werks"><Label text="Receiving Plant"/>
+											<table:template><Text text="{monthly>werks}"/></table:template>
+										</table:Column>
+										<table:Column sortProperty="month" filterProperty="month"><Label text="Month"/>
+											<table:template><Text text="{monthly>month}"/></table:template>
+										</table:Column>
+										<table:Column sortProperty="pgi" filterProperty="pgi" hAlign="End"><Label text="PGI Records"/>
+											<table:template><ObjectNumber number="{monthly>pgi}"/></table:template>
+										</table:Column>
+										<table:Column sortProperty="grn" filterProperty="grn" hAlign="End"><Label text="GRN Records"/>
+											<table:template><ObjectNumber number="{monthly>grn}"/></table:template>
+										</table:Column>
+									</table:columns>
+								</table:Table>
+							</IconTabFilter>
+						</items>
+					</IconTabBar>
+					<VBox visible="{view>/emptyVisible}" class="emptyState"><Title text="No data" level="H2"/><Text text="Choose one or more supplying plants, then select Go." class="mutedText"/></VBox>
+				</VBox>
+			</content>
+		</Page>
 	</App>
 </mvc:View>
