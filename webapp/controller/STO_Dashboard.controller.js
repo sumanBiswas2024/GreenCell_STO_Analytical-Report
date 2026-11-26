@@ -41,7 +41,8 @@ sap.ui.define([
 				error: "",
 				plantError: "",
 				monthlyError: "",
-				monthlyTitle: "Monthly STO Analysis – " + year,
+				plantTitle: "Plant-wise STO Overview",
+				monthlyTitle: "Monthly STO Analysis",
 				kpi: {
 					po: "–",
 					plantCaption: "Select supplying plant(s)",
@@ -170,6 +171,7 @@ sap.ui.define([
 			});
 			this._committedPlants = plants;
 			this._viewModel.setProperty("/plantContext", plants.join(", "));
+			this._updateSectionTitles();
 			this._plantLoaded = false;
 			this._monthlyLoaded = false;
 			this._viewModel.setProperty("/error", "");
@@ -208,7 +210,7 @@ sap.ui.define([
 		onYearChange: function(oEvent) {
 			var year = oEvent.getSource().getSelectedKey();
 			this._viewModel.setProperty("/year", year);
-			this._viewModel.setProperty("/monthlyTitle", "Monthly STO Analysis – " + year);
+			this._updateSectionTitles();
 			if (this._committedPlants.length) {
 				this._viewModel.setProperty("/monthlyBusy", true);
 				this._viewModel.setProperty("/monthlyVisible", false);
@@ -217,11 +219,20 @@ sap.ui.define([
 			}
 		},
 
+		_updateSectionTitles: function() {
+			var plants = this._committedPlants.join(", ");
+			var year = this._viewModel.getProperty("/year");
+			this._viewModel.setProperty("/plantTitle", plants ? "Plant-wise STO Overview · Plants " + plants + " · Year " + year : "Plant-wise STO Overview");
+			// this._viewModel.setProperty("/monthlyTitle", "Monthly STO Analysis" + year + (plants ? " · Plants " + plants : ""));
+			this._viewModel.setProperty("/monthlyTitle", plants ? "Monthly STO Analysis · Plants " + plants + " · Year " + year : "");
+		},
+
 		onClear: function() {
 			this.byId("plantInput").removeAllTokens();
 			this.byId("plantInput").setValue("");
 			this.byId("plantInput").setValueState("None");
 			this._committedPlants = [];
+			this._updateSectionTitles();
 			this._plantRequestId = (this._plantRequestId || 0) + 1;
 			this._monthlyRequestId = (this._monthlyRequestId || 0) + 1;
 			this._plantLoaded = false;

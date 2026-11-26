@@ -5,7 +5,7 @@
 		<Page showHeader="false" enableScrolling="true" class="stoPage">
 			<content>
 				<VBox class="stoHeader sapUiResponsiveContentPadding">
-					<Title text="Green Cell STO Report" level="H1" class="stoTitle"/>
+					<Title text="STO Dashboard" level="H1" class="stoTitle"/>
 					<Text text="Stock Transfer Orders: PO › PGI › GRN › MIRO" class="stoSubtitle"/>
 					<HBox wrap="Wrap" alignItems="End" class="stoFilters filterSurface">
 						<VBox class="plantFilter">
@@ -14,7 +14,7 @@
 								value="{view>/plantDraft}" submit="onPlantSubmit"/>
 						</VBox>
 						<VBox class="yearFilter">
-							<Label text="Posting Year (monthly section)" labelFor="yearSelect"/>
+							<Label text="Posting Year" labelFor="yearSelect"/>
 							<Select id="yearSelect" width="100%" selectedKey="{view>/year}" items="{view>/years}" change="onYearChange">
 								<core:Item key="{view>key}" text="{view>text}"/>
 							</Select>
@@ -62,7 +62,7 @@
 					<VBox visible="{view>/plantVisible}" class="sectionBlock">
 						<HBox class="sectionHeader" alignItems="Center">
 							<core:Icon src="sap-icon://factory" class="sectionHeaderIcon"/>
-							<VBox class="sectionHeading"><Title text="Plant-wise STO Overview" level="H2" class="sectionTitle"/><Text text="All postings for the selected supplying plants, across all years" class="sectionSubtitle"/></VBox>
+							<VBox class="sectionHeading"><Title text="{view>/plantTitle}" level="H2" class="sectionTitle"/><Text text="All postings for the selected supplying plants, across all years" class="sectionSubtitle"/></VBox>
 						</HBox>
 						<layout:Grid defaultSpan="XL6 L6 M12 S12" hSpacing="1" vSpacing="1" class="pairedChartGrid">
 							<VBox class="pairedChartPane"><Title text="Receiving Plant-wise STO Records" level="H3"/><Text text="Purchase orders by receiving plant" class="mutedText"/>
