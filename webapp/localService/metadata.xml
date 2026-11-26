@@ -1,0 +1,66 @@
+<edmx:Edmx
+    xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+    xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+    xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema
+            xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="ZO_STO_SRV" xml:lang="en" sap:schema-version="1">
+            <EntityType Name="es_plant_wise" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="werks"/>
+                    <PropertyRef Name="reswk"/>
+                </Key>
+                <Property Name="werks" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Receiving Plant"/>
+                <Property Name="reswk" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Supplying Plant"/>
+                <Property Name="ebeln" Type="Edm.String" sap:unicode="false" sap:label="No. of PO"/>
+                <Property Name="dmbtr" Type="Edm.String" sap:unicode="false" sap:label="PGI Value"/>
+                <Property Name="budat" Type="Edm.String" sap:unicode="false" sap:label="Posting date"/>
+            </EntityType>
+            <EntityType Name="es_monthly_sto" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="reswk"/>
+                    <PropertyRef Name="werks"/>
+                </Key>
+                <Property Name="reswk" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Supplying Plant"/>
+                <Property Name="werks" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Receiving Plant"/>
+                <Property Name="ebeln" Type="Edm.String" sap:unicode="false" sap:label="PO"/>
+                <Property Name="budat" Type="Edm.String" sap:unicode="false" sap:label="Posting date"/>
+                <Property Name="mjahr" Type="Edm.String" sap:unicode="false" sap:label="Posting Year"/>
+                <Property Name="pgi_01" Type="Edm.String" sap:unicode="false" sap:label="PGI January"/>
+                <Property Name="pgi_02" Type="Edm.String" sap:unicode="false" sap:label="PGI February"/>
+                <Property Name="pgi_03" Type="Edm.String" sap:unicode="false" sap:label="PGI March"/>
+                <Property Name="pgi_04" Type="Edm.String" sap:unicode="false" sap:label="PGI April"/>
+                <Property Name="pgi_05" Type="Edm.String" sap:unicode="false" sap:label="PGI may"/>
+                <Property Name="pgi_06" Type="Edm.String" sap:unicode="false" sap:label="PGI June"/>
+                <Property Name="pgi_07" Type="Edm.String" sap:unicode="false" sap:label="PGI July"/>
+                <Property Name="pgi_08" Type="Edm.String" sap:unicode="false" sap:label="PGI August"/>
+                <Property Name="pgi_09" Type="Edm.String" sap:unicode="false" sap:label="PGI September"/>
+                <Property Name="pgi_10" Type="Edm.String" sap:unicode="false" sap:label="PGI October"/>
+                <Property Name="pgi_11" Type="Edm.String" sap:unicode="false" sap:label="PGI November"/>
+                <Property Name="pgi_12" Type="Edm.String" sap:unicode="false" sap:label="PGI  December"/>
+                <Property Name="grn_01" Type="Edm.String" sap:unicode="false" sap:label="GRN January"/>
+                <Property Name="grn_02" Type="Edm.String" sap:unicode="false" sap:label="GRN February"/>
+                <Property Name="grn_03" Type="Edm.String" sap:unicode="false" sap:label="GRN March"/>
+                <Property Name="grn_04" Type="Edm.String" sap:unicode="false" sap:label="GRN April"/>
+                <Property Name="grn_05" Type="Edm.String" sap:unicode="false" sap:label="GRN May"/>
+                <Property Name="grn_06" Type="Edm.String" sap:unicode="false" sap:label="GRN June"/>
+                <Property Name="grn_07" Type="Edm.String" sap:unicode="false" sap:label="GRN July"/>
+                <Property Name="grn_08" Type="Edm.String" sap:unicode="false" sap:label="GRN August"/>
+                <Property Name="grn_09" Type="Edm.String" sap:unicode="false" sap:label="GRN September"/>
+                <Property Name="grn_10" Type="Edm.String" sap:unicode="false" sap:label="GRN October"/>
+                <Property Name="grn_11" Type="Edm.String" sap:unicode="false" sap:label="GRN November"/>
+                <Property Name="grn_12" Type="Edm.String" sap:unicode="false" sap:label="GRN December"/>
+            </EntityType>
+            <EntityContainer Name="ZO_STO_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="es_plant_wiseset" EntityType="ZO_STO_SRV.es_plant_wise" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="es_monthly_stoset" EntityType="ZO_STO_SRV.es_monthly_sto" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+            </EntityContainer>
+            <Annotation
+                xmlns="http://docs.oasis-open.org/odata/ns/edm" Term="Core.SchemaVersion" String="1.0.0"/>
+                <atom:link
+                    xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="./sap/ZO_STO_SRV/$metadata"/>
+                    <atom:link
+                        xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="./sap/ZO_STO_SRV/$metadata"/>
+                    </Schema>
+                </edmx:DataServices>
+            </edmx:Edmx>
