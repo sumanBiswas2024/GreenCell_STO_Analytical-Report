@@ -56,7 +56,7 @@
 					</layout:Grid>
 					<VBox visible="{view>/promptVisible}" class="startCard">
 						<core:Icon src="sap-icon://filter" size="1.5rem" class="startIcon"/>
-						<VBox><Title text="Choose a supplying plant to begin" level="H3"/><Text text="Enter one supplying plant code, then select Go. Plant overview and monthly trends will load in separate sections."
+						<VBox><Title text="Choose a supplying plant to begin" level="H3" class="prpoSectionTitle"/><Text text="Enter one supplying plant code, then select Go. Plant overview and monthly trends will load in separate sections."
 							class="mutedText"/></VBox>
 					</VBox>
 					<HBox width="100%" justifyContent="Center" alignItems="Center" visible="{view>/plantBusy}" class="sectionLoader"><BusyIndicator size="1.75rem"/><Text text="Loading plant overview…" class="loaderText"/></HBox>
@@ -67,7 +67,7 @@
 							<VBox class="sectionHeading"><Title text="{view>/plantTitle}" level="H2" class="sectionTitle"/></VBox>
 						</HBox>
 						<layout:Grid defaultSpan="XL6 L6 M12 S12" hSpacing="1" vSpacing="1" class="pairedChartGrid">
-							<VBox class="pairedChartPane"><Title text="Receiving Plant-wise STO Records" level="H3"/><Text text="Purchase orders by receiving plant" class="mutedText"/>
+							<VBox class="pairedChartPane"><Title text="Receiving Plant-wise STO Records" level="H3" class="prpoSectionTitle"/><Text text="Purchase orders by receiving plant" class="mutedText"/>
 								<chart:ChartContainer showFullScreen="true" showPersonalization="false" showZoom="true" showLegendButton="false" showSelectionDetails="true"
 									class="chartTools">
 									<chart:content>
@@ -88,7 +88,7 @@
 									</chart:content>
 								</chart:ChartContainer>
 							</VBox>
-							<VBox class="pairedChartPane"><Title text="Receiving Plant-wise PGI Value" level="H3"/><Text text="PGI value in INR Lakh" class="mutedText"/>
+							<VBox class="pairedChartPane"><Title text="Receiving Plant-wise PGI Value" level="H3" class="prpoSectionTitle"/><Text text="PGI value in INR Lakh" class="mutedText"/>
 								<chart:ChartContainer showFullScreen="true" showPersonalization="false" showZoom="true" showLegend="true" showLegendButton="false"
 									showSelectionDetails="true" class="chartTools">
 									<chart:content>
@@ -115,6 +115,7 @@
 					<HBox width="100%" justifyContent="Center" alignItems="Center" visible="{view>/monthlyBusy}" class="sectionLoader"><BusyIndicator size="1.75rem"/><Text text="Loading monthly analysis…" class="loaderText"/></HBox>
 					<MessageStrip text="{view>/monthlyError}" type="Error" showIcon="true" visible="{= !!${view>/monthlyError} }" class="sapUiSmallMarginTop"/>
 					<VBox visible="{view>/monthlyVisible}" class="sectionBlock">
+					<!--<VBox visible="false" class="sectionBlock">-->
 						<HBox class="sectionHeader" alignItems="Center">
 							<core:Icon src="sap-icon://calendar" class="sectionHeaderIcon"/>
 							<VBox class="sectionHeading"><Title text="{view>/monthlyTitle}" level="H2" class="sectionTitle"/></VBox>
@@ -122,10 +123,10 @@
 						<layout:Grid defaultSpan="XL12 L12 M12 S12" hSpacing="0" vSpacing="1" class="pairedChartGrid">
 							<VBox class="pairedChartPane">
 								<HBox class="monthlyChartHeading" alignItems="Center" justifyContent="SpaceBetween" wrap="Wrap">
-									<VBox class="monthlyChartHeadingCopy"><Title text="Monthly STO Trend Analysis" level="H3"/><Text text="PGI and GRN records by posting month" class="mutedText"/></VBox>
+									<VBox class="monthlyChartHeadingCopy"><Title text="Monthly STO Trend Analysis" level="H3" class="prpoSectionTitle"/><Text text="PGI and GRN records by posting month" class="mutedText"/></VBox>
 									<OverflowToolbar width="auto" class="chartMetricToolbar monthlyTrendTotals">
-										<ObjectNumber number="{monthly>/totals/pgi}" unit="PGI total" class="chartTotal trendPgiTotal"/>
-										<ObjectNumber number="{monthly>/totals/grn}" unit="GRN total" class="chartTotal trendGrnTotal"/>
+										<ObjectNumber number="{monthly>/totals/pgi}" unit="Total PGI" class="chartTotal trendPgiTotal"/>
+										<ObjectNumber number="{monthly>/totals/grn}" unit="Total GRN" class="chartTotal trendGrnTotal"/>
 									</OverflowToolbar>
 								</HBox>
 								<chart:ChartContainer showFullScreen="true" showPersonalization="false" showZoom="true" showLegend="false" showLegendButton="false"
@@ -155,10 +156,10 @@
 							</VBox>
 							<VBox class="pairedChartPane">
 								<HBox class="monthlyChartHeading" alignItems="Center" justifyContent="SpaceBetween" wrap="Wrap">
-									<VBox class="monthlyChartHeadingCopy"><Title text="Receiving Plant-wise PGI vs GRN" level="H3"/><Text text="Document counts by receiving plant" class="mutedText"/></VBox>
+									<VBox class="monthlyChartHeadingCopy"><Title text="Receiving Plant-wise PGI vs GRN" level="H3" class="prpoSectionTitle"/><Text text="Document counts by receiving plant" class="mutedText"/></VBox>
 									<OverflowToolbar width="auto" class="chartMetricToolbar monthlyPlantTotals">
-										<ObjectNumber number="{monthly>/totals/pgi}" unit="PGI total" class="chartTotal plantPgiTotal"/>
-										<ObjectNumber number="{monthly>/totals/grn}" unit="GRN total" class="chartTotal plantGrnTotal"/>
+										<ObjectNumber number="{monthly>/totals/pgi}" unit="Total PGI" class="chartTotal plantPgiTotal"/>
+										<ObjectNumber number="{monthly>/totals/grn}" unit="Total GRN" class="chartTotal plantGrnTotal"/>
 									</OverflowToolbar>
 								</HBox>
 								<chart:ChartContainer showFullScreen="true" showPersonalization="false" showZoom="true" showLegend="false" showLegendButton="false"
