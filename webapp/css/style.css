@@ -273,7 +273,7 @@ body,
 
 .sectionHeader {
     gap: .85rem;
-    margin: .15rem 0 1rem;
+    /*margin: .15rem 0 1rem;*/
 }
 
 .sectionHeaderIcon {
@@ -369,7 +369,7 @@ body,
 .pairedChartGrid {
     box-sizing: border-box;
     width: 100%;
-    margin: .2rem 0 .9rem;
+    /*margin: .2rem 0 .9rem;*/
     padding: .3rem .45rem;
     overflow: hidden;
     border: 1px solid #dce4ea;
