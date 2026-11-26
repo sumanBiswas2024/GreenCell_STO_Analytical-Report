@@ -70,7 +70,9 @@ sap.ui.define([
 				this.getView().addDependent(popover);
 				this._chartPopoverById[chartId] = popover;
 			}, this);
-			this._chartPopoverById.plantValueChart.setFormatString({ "PGI Value (INR Lakh)": "#,##0.0" });
+			this._chartPopoverById.plantValueChart.setFormatString({
+				"PGI Value (INR Lakh)": "#,##0.0"
+			});
 		},
 
 		onAfterRendering: function() {
@@ -92,6 +94,10 @@ sap.ui.define([
 
 		_connectChartPopover: function(chartId) {
 			var chart = this.byId(chartId);
+			var legendRequired = ["plantValueChart", "monthlyTrendChart", "monthlyPlantChart"].indexOf(chartId) !== -1;
+			if (legendRequired && chart && chart.getLegendVisible && !chart.getLegendVisible()) {
+				chart.setLegendVisible(true);
+			}
 			var uid = chart && chart.getVizUid && chart.getVizUid();
 			if (uid && this._chartPopoverUid[chartId] !== uid) {
 				this._chartPopoverById[chartId].connect(uid);
@@ -463,14 +469,22 @@ sap.ui.define([
 			});
 			var valueChart = valuePlants.slice(0, 8).map(function(plant) {
 				var value = Number(plant.value.toFixed(1));
-				return { werks: plant.werks, value: value, legendLabel: plant.werks + " · " + value.toFixed(1) + " Lakh" };
+				return {
+					werks: plant.werks,
+					value: value,
+					legendLabel: plant.werks + " · " + value.toFixed(1) + " Lakh"
+				};
 			});
 			if (valuePlants.length > 8) {
 				var otherValue = valuePlants.slice(8).reduce(function(total, plant) {
 					return total + plant.value;
 				}, 0);
 				otherValue = Number(otherValue.toFixed(1));
-				valueChart.push({ werks: "Others", value: otherValue, legendLabel: "Others · " + otherValue.toFixed(1) + " Lakh" });
+				valueChart.push({
+					werks: "Others",
+					value: otherValue,
+					legendLabel: "Others · " + otherValue.toFixed(1) + " Lakh"
+				});
 			}
 			var table = Object.keys(byPair).map(function(key) {
 				var row = byPair[key];

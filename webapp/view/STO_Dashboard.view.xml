@@ -59,14 +59,14 @@
 							<core:Icon src="sap-icon://factory" class="sectionHeaderIcon"/>
 							<VBox class="sectionHeading"><Title text="Plant-wise STO Overview" level="H2" class="sectionTitle"/><Text text="All postings for the selected supplying plants, across all years" class="sectionSubtitle"/></VBox>
 						</HBox>
-						<layout:Grid defaultSpan="XL6 L6 M12 S12" hSpacing="1" vSpacing="1">
-							<VBox class="chartCard"><Title text="Receiving Plant-wise STO Records" level="H3"/><Text text="Purchase orders by receiving plant" class="mutedText"/>
+						<layout:Grid defaultSpan="XL6 L6 M12 S12" hSpacing="1" vSpacing="1" class="pairedChartGrid">
+							<VBox class="pairedChartPane"><Title text="Receiving Plant-wise STO Records" level="H3"/><Text text="Purchase orders by receiving plant" class="mutedText"/>
 								<chart:ChartContainer showFullScreen="true" showPersonalization="false" showZoom="true" showLegendButton="false" showSelectionDetails="true"
 									class="chartTools">
 									<chart:content>
 										<chart:ChartContainerContent title="STO records by receiving plant" icon="sap-icon://bar-chart">
 											<chart:content>
-												<viz:VizFrame id="plantPoChart" vizType="bar" width="100%" height="22rem" uiConfig="{applicationSet:'fiori'}"
+												<viz:VizFrame id="plantPoChart" vizType="bar" width="100%" height="18.5rem" uiConfig="{applicationSet:'fiori'}"
 													renderComplete="onChartRenderComplete" vizProperties="{title:{visible:false},plotArea:{dataLabel:{visible:true}},legend:{visible:false}}">
 													<viz:dataset>
 														<viz.data:FlattenedDataset data="{plant>/byPlant}">
@@ -81,15 +81,15 @@
 									</chart:content>
 								</chart:ChartContainer>
 							</VBox>
-							<VBox class="chartCard"><Title text="Receiving Plant-wise PGI Value" level="H3"/><Text text="PGI value in INR Lakh" class="mutedText"/>
-								<chart:ChartContainer showFullScreen="true" showPersonalization="false" showZoom="true" showLegendButton="false" showSelectionDetails="true"
-									class="chartTools">
+							<VBox class="pairedChartPane"><Title text="Receiving Plant-wise PGI Value" level="H3"/><Text text="PGI value in INR Lakh" class="mutedText"/>
+								<chart:ChartContainer showFullScreen="true" showPersonalization="false" showZoom="true" showLegend="true" showLegendButton="false"
+									showSelectionDetails="true" class="chartTools">
 									<chart:content>
 										<chart:ChartContainerContent title="PGI value by receiving plant" icon="sap-icon://pie-chart">
 											<chart:content>
-												<viz:VizFrame id="plantValueChart" vizType="donut" width="100%" height="22rem" uiConfig="{applicationSet:'fiori'}"
+												<viz:VizFrame id="plantValueChart" vizType="donut" width="100%" height="18.5rem" uiConfig="{applicationSet:'fiori'}"
 													renderComplete="onChartRenderComplete"
-													vizProperties="{title:{visible:false},plotArea:{dataLabel:{visible:true,type:'percentage'}},legend:{visible:true,position:'right'}}">
+													vizProperties="{title:{visible:false},plotArea:{dataLabel:{visible:true,type:'percentage'}},legend:{visible:true},legendGroup:{layout:{position:'right'}}}">
 													<viz:dataset>
 														<viz.data:FlattenedDataset data="{plant>/byValue}">
 															<viz.data:dimensions><viz.data:DimensionDefinition name="Receiving Plant · PGI Value (INR Lakh)" value="{plant>legendLabel}"/></viz.data:dimensions>
@@ -112,16 +112,16 @@
 							<core:Icon src="sap-icon://calendar" class="sectionHeaderIcon"/>
 							<VBox class="sectionHeading"><Title text="{view>/monthlyTitle}" level="H2" class="sectionTitle"/><Text text="Posting year selection applies to this section only" class="sectionSubtitle"/></VBox>
 						</HBox>
-						<layout:Grid defaultSpan="XL6 L6 M12 S12" hSpacing="1" vSpacing="1">
-							<VBox class="chartCard"><Title text="Monthly STO Trend Analysis" level="H3"/><Text text="PGI and GRN records by posting month" class="mutedText"/>
-								<chart:ChartContainer showFullScreen="true" showPersonalization="false" showZoom="true" showLegendButton="false" showSelectionDetails="true"
-									class="chartTools">
+						<layout:Grid defaultSpan="XL12 L12 M12 S12" hSpacing="0" vSpacing="1" class="pairedChartGrid">
+							<VBox class="pairedChartPane"><Title text="Monthly STO Trend Analysis" level="H3"/><Text text="PGI and GRN records by posting month" class="mutedText"/>
+								<chart:ChartContainer showFullScreen="true" showPersonalization="false" showZoom="true" showLegend="true" showLegendButton="false"
+									showSelectionDetails="true" class="chartTools">
 									<chart:content>
 										<chart:ChartContainerContent title="Monthly PGI and GRN trend" icon="sap-icon://line-chart">
 											<chart:content>
-												<viz:VizFrame id="monthlyTrendChart" vizType="column" width="100%" height="22rem" uiConfig="{applicationSet:'fiori'}"
+												<viz:VizFrame id="monthlyTrendChart" vizType="column" width="100%" height="18.5rem" uiConfig="{applicationSet:'fiori'}"
 													renderComplete="onChartRenderComplete"
-													vizProperties="{title:{visible:false},plotArea:{dataLabel:{visible:true}},legend:{visible:true,position:'top'}}">
+													vizProperties="{title:{visible:false},plotArea:{dataLabel:{visible:true},colorPalette:['#0a6ed1','#e9730c']},legend:{visible:true,alignment:'middle'},legendGroup:{layout:{position:'bottom'}}}">
 													<viz:dataset>
 														<viz.data:FlattenedDataset data="{monthly>/byMonth}">
 															<viz.data:dimensions><viz.data:DimensionDefinition name="Month" value="{monthly>month}"/></viz.data:dimensions>
@@ -135,15 +135,15 @@
 									</chart:content>
 								</chart:ChartContainer>
 							</VBox>
-							<VBox class="chartCard"><Title text="Receiving Plant-wise PGI vs GRN" level="H3"/><Text text="Document counts by receiving plant" class="mutedText"/>
-								<chart:ChartContainer showFullScreen="true" showPersonalization="false" showZoom="true" showLegendButton="false" showSelectionDetails="true"
-									class="chartTools">
+							<VBox class="pairedChartPane"><Title text="Receiving Plant-wise PGI vs GRN" level="H3"/><Text text="Document counts by receiving plant" class="mutedText"/>
+								<chart:ChartContainer showFullScreen="true" showPersonalization="false" showZoom="true" showLegend="true" showLegendButton="false"
+									showSelectionDetails="true" class="chartTools">
 									<chart:content>
 										<chart:ChartContainerContent title="PGI and GRN by receiving plant" icon="sap-icon://bar-chart">
 											<chart:content>
-												<viz:VizFrame id="monthlyPlantChart" vizType="column" width="100%" height="22rem" uiConfig="{applicationSet:'fiori'}"
+												<viz:VizFrame id="monthlyPlantChart" vizType="column" width="100%" height="18.5rem" uiConfig="{applicationSet:'fiori'}"
 													renderComplete="onChartRenderComplete"
-													vizProperties="{title:{visible:false},plotArea:{dataLabel:{visible:true}},legend:{visible:true,position:'top'}}">
+													vizProperties="{title:{visible:false},plotArea:{dataLabel:{visible:true},colorPalette:['#8b5cf6','#00a6a6']},legend:{visible:true,alignment:'middle'},legendGroup:{layout:{position:'bottom'}}}">
 													<viz:dataset>
 														<viz.data:FlattenedDataset data="{monthly>/byMonthlyPlant}">
 															<viz.data:dimensions><viz.data:DimensionDefinition name="Receiving Plant" value="{monthly>werks}"/></viz.data:dimensions>
@@ -159,11 +159,10 @@
 							</VBox>
 						</layout:Grid>
 					</VBox>
-					<IconTabBar id="summaryTabs" class="summaryCard" expandable="false" selectedKey="plant" visible="{view>/summaryVisible}">
-						<items>
-							<IconTabFilter key="plant" text="Plant Summary" icon="sap-icon://factory">
-								<OverflowToolbar><Title text="Plant Summary" level="H3"/><ToolbarSpacer/><SearchField width="18rem" placeholder="Search plants" liveChange="onPlantSearch"/><Button text="Export" icon="sap-icon://excel-attachment" press="onExportPlant"/></OverflowToolbar>
-								<table:Table id="plantTable" rows="{plant>/table}" selectionMode="None" visibleRowCountMode="Auto" minAutoRowCount="4"
+					<layout:Grid defaultSpan="XL12 L12 M12 S12" hSpacing="1" vSpacing="1" class="tableSplitGrid" visible="{view>/summaryVisible}">
+						<VBox class="summaryCard tablePanel sapUiRespGridSpanXL7 sapUiRespGridSpanL7 sapUiRespGridSpanM12 sapUiRespGridSpanS12">
+								<OverflowToolbar><Title text="Plant Summary" level="H3"/><ToolbarSpacer/><SearchField width="10rem" placeholder="Search plants" liveChange="onPlantSearch"/><Button text="Export" icon="sap-icon://excel-attachment" press="onExportPlant"/></OverflowToolbar>
+								<table:Table id="plantTable" width="100%" rows="{plant>/table}" selectionMode="None" visibleRowCountMode="Auto" minAutoRowCount="4"
 									enableColumnReordering="true" showNoData="true">
 									<table:columns>
 										<table:Column sortProperty="werks" filterProperty="werks"><Label text="Receiving Plant"/>
@@ -183,10 +182,10 @@
 										</table:Column>
 									</table:columns>
 								</table:Table>
-							</IconTabFilter>
-							<IconTabFilter key="monthly" text="Monthly PGI / GRN Summary" icon="sap-icon://calendar">
-								<OverflowToolbar><Title text="Monthly PGI / GRN Summary" level="H3"/><ToolbarSpacer/><SearchField width="18rem" placeholder="Search plants or months" liveChange="onMonthlySearch"/><Button text="Export" icon="sap-icon://excel-attachment" press="onExportMonthly"/></OverflowToolbar>
-								<table:Table id="monthlyTable" rows="{monthly>/table}" selectionMode="None" visibleRowCountMode="Auto" minAutoRowCount="4"
+						</VBox>
+						<VBox class="summaryCard tablePanel sapUiRespGridSpanXL5 sapUiRespGridSpanL5 sapUiRespGridSpanM12 sapUiRespGridSpanS12">
+								<OverflowToolbar><Title text="Monthly PGI / GRN Summary" level="H3"/><ToolbarSpacer/><SearchField width="10rem" placeholder="Search plants or months" liveChange="onMonthlySearch"/><Button text="Export" icon="sap-icon://excel-attachment" press="onExportMonthly"/></OverflowToolbar>
+								<table:Table id="monthlyTable" width="100%" rows="{monthly>/table}" selectionMode="None" visibleRowCountMode="Auto" minAutoRowCount="4"
 									enableColumnReordering="true" showNoData="true">
 									<table:columns>
 										<table:Column sortProperty="werks" filterProperty="werks"><Label text="Receiving Plant"/>
@@ -203,9 +202,8 @@
 										</table:Column>
 									</table:columns>
 								</table:Table>
-							</IconTabFilter>
-						</items>
-					</IconTabBar>
+						</VBox>
+					</layout:Grid>
 					<VBox visible="{view>/emptyVisible}" class="emptyState"><Title text="No data" level="H2"/><Text text="Choose one or more supplying plants, then select Go." class="mutedText"/></VBox>
 				</VBox>
 			</content>

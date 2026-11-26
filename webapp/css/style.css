@@ -87,16 +87,19 @@ html, body, #content { min-height: 100%; }
 .sectionSubtitle { margin: .22rem 0 0; color: #60778b !important; font-size: .88rem; line-height: 1.25rem; }
 .startCard { display: flex; flex-direction: row; align-items: center; gap: 1rem; margin: 1.2rem 0; padding: 1.25rem 1.4rem; border: 1px solid #dce5ec; border-radius: .95rem; background: linear-gradient(115deg, #fff 0%, #f3f8ff 100%); box-shadow: 0 2px 8px rgba(29,45,62,.055); }
 .startIcon { flex: 0 0 auto; box-sizing: content-box; padding: .85rem; border-radius: 50%; color: #0070f2; background: #e7f1ff; }
-.summaryCard .sapMITBText { max-width: 15rem !important; }
-.chartCard { box-sizing: border-box; min-width: 0; width: calc(100% - .8rem); margin: .4rem; padding: .85rem .9rem .55rem; border: 1px solid #dce4ea; border-radius: .95rem; background: #fff; box-shadow: 0 2px 8px rgba(29,45,62,.05); }
+.chartCard { box-sizing: border-box; min-width: 0; width: calc(100% - .7rem); margin: .35rem; padding: .85rem .9rem .55rem; border: 1px solid #dce4ea; border-radius: .95rem; background: #fff; box-shadow: 0 2px 8px rgba(29,45,62,.05); }
 .chartCard > .sapMTitle { color: #1d2d3e; }
 .chartTools { display: block; box-sizing: border-box; width: 100%; min-width: 0; overflow: hidden; border-radius: .65rem; }
 .chartTools .sapMOTB { min-height: 2.6rem; padding: 0 .35rem; border: 0; border-bottom: 1px solid #edf1f4; background: #f8fafc; }
 .chartTools .sapMBtnInner { border-radius: .45rem; }
-.summaryCard { overflow: hidden; border: 1px solid #dce2e8; border-radius: .95rem; background: #fff; box-shadow: 0 2px 8px rgba(29,45,62,.05); }
-.summaryCard .sapMITBHead { padding-left: 1rem; }
-.summaryCard .sapMITBContainerContent { border-top: 1px solid #e4e8eb; }
-.summaryCard .sapMOTB { border-bottom: 0; }
+.pairedChartGrid { box-sizing: border-box; width: 100%; margin: .2rem 0 .9rem; padding: .3rem .45rem; overflow: hidden; border: 1px solid #dce4ea; border-radius: .95rem; background: #fff; box-shadow: 0 2px 8px rgba(29,45,62,.05); }
+.pairedChartPane { box-sizing: border-box; width: 100%; min-width: 0; padding: .45rem .5rem; }
+.pairedChartPane > .sapMTitle { color: #1d2d3e; }
+.pairedChartPane > .sapMText { margin-bottom: .15rem; }
+.tableSplitGrid { box-sizing: border-box; width: 100%; margin: .15rem 0 .8rem; }
+.summaryCard { box-sizing: border-box; min-width: 0; overflow: hidden; border: 1px solid #dce2e8; border-radius: .95rem; background: #fff; box-shadow: 0 2px 8px rgba(29,45,62,.05); }
+.tablePanel .sapMOTB { min-height: 3.25rem; padding: 0 .75rem; border-bottom: 1px solid #e8edf1; background: #fff; }
+.tablePanel .sapMTitle { color: #1b3449; font-size: 1rem; }
 .summaryCard .sapUiTable { border: 0; }
 .summaryCard .sapUiTableColHdrCnt { background: #f4f6f7; }
 .emptyState { align-items: center; padding: 3rem 1rem; }
@@ -112,7 +115,12 @@ html, body, #content { min-height: 100%; }
 	.kpiGrid { margin: 0 -.3rem .6rem; }
 	.kpiCard { min-height: 8.3rem; margin: .3rem; }
 	.chartCard { margin: .3rem 0; padding: .8rem; }
-	.chartCard { width: 100%; }
+	.chartCard { width: 100%; margin: .3rem 0; }
+	.pairedChartGrid { padding: .2rem; }
+	.pairedChartPane { padding: .4rem; }
+	.tableSplitGrid { margin: 0 0 .65rem; }
+	.tablePanel { margin-bottom: .6rem; }
+	.tablePanel .sapMOTB { padding: 0 .45rem; }
 	.sectionHeader { gap: .65rem; margin-bottom: .8rem; }
 	.sectionHeaderIcon { width: 2.5rem; height: 2.5rem; padding: .63rem; }
 	.sectionTitle.sapMTitle { font-size: 1.18rem; line-height: 1.4rem; }
