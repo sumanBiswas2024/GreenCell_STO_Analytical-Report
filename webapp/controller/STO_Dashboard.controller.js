@@ -5,8 +5,12 @@ sap.ui.define([
 	"sap/ui/model/FilterOperator",
 	"sap/ui/export/Spreadsheet",
 	"sap/viz/ui5/controls/Popover",
-	"sap/m/MessageToast"
-], function(Controller, JSONModel, Filter, FilterOperator, Spreadsheet, VizPopover, MessageToast) {
+	"sap/m/MessageToast",
+	"sap/ui/table/Column",
+	"sap/m/Label",
+	"sap/m/Text",
+	"sap/m/ObjectNumber"
+], function(Controller, JSONModel, Filter, FilterOperator, Spreadsheet, VizPopover, MessageToast, TableColumn, Label, Text, ObjectNumber) {
 	"use strict";
 
 	var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -307,6 +311,8 @@ sap.ui.define([
 			var requestId = (this._monthlyRequestId || 0) + 1;
 			this._monthlyRequestId = requestId;
 			this._monthlyLoaded = false;
+			this._configureMonthlyTable();
+			this.byId("monthlySearch").setValue("");
 			this.getView().getModel("monthly").setData({
 				byMonth: [],
 				byMonthlyPlant: [],
@@ -333,6 +339,7 @@ sap.ui.define([
 						}
 						var rows = result.results || [];
 						var data = that._aggregateMonthly(rows, entity);
+						that._configureMonthlyTable();
 						that.getView().getModel("monthly").setData(data);
 						that._monthlyLoaded = true;
 						that._viewModel.setProperty("/monthlyBusy", false);
@@ -360,6 +367,70 @@ sap.ui.define([
 				that._appendErrors();
 				that._updateDisplayStates();
 			});
+		},
+
+		_configureMonthlyTable: function() {
+			var table = this.byId("monthlyTable");
+			this._monthlyTableMonthColumns = MONTHS.map(function(month, index) {
+				var suffix = (index + 1 < 10 ? "0" : "") + (index + 1);
+				return {
+					month: month,
+					pgiProperty: "pgi_" + suffix,
+					grnProperty: "grn_" + suffix
+				};
+			});
+			table.destroyColumns();
+			table.addColumn(new TableColumn({
+				width: "8rem",
+				multiLabels: [new Label({
+					text: "Receiving Plant"
+				}), new Label({
+					text: " "
+				})],
+				headerSpan: [1, 1],
+				sortProperty: "werks",
+				filterProperty: "werks",
+				template: new Text({
+					text: "{monthly>werks}"
+				})
+			}));
+			this._monthlyTableMonthColumns.forEach(function(month) {
+				table.addColumn(new TableColumn({
+					width: "6.5rem",
+					headerSpan: [2, 1],
+					multiLabels: [new Label({
+						text: month.month,
+						width: "100%",
+						textAlign: "Center"
+					}), new Label({
+						text: "PGI Records"
+					})],
+					sortProperty: month.pgiProperty,
+					filterProperty: month.pgiProperty,
+					hAlign: "End",
+					template: new ObjectNumber({
+						number: "{monthly>" + month.pgiProperty + "}"
+					})
+				}));
+				table.addColumn(new TableColumn({
+					width: "6.5rem",
+					multiLabels: [new Label({
+						text: " "
+					}), new Label({
+						text: "GRN Records"
+					})],
+					sortProperty: month.grnProperty,
+					filterProperty: month.grnProperty,
+					hAlign: "End",
+					template: new ObjectNumber({
+						number: "{monthly>" + month.grnProperty + "}"
+					})
+				}));
+			}, this);
+			var binding = table.getBinding("rows");
+			if (binding) {
+				binding.filter([]);
+			}
 		},
 
 		_readMetadata: function() {
@@ -487,7 +558,6 @@ sap.ui.define([
 				};
 			});
 			var byPlant = {};
-			var monthlyTable = [];
 			rows.forEach(function(row) {
 				var werks = String(row[fields.werks] || "");
 				var plant = byPlant[werks] || (byPlant[werks] = {
@@ -526,16 +596,17 @@ sap.ui.define([
 				pgi: 0,
 				grn: 0
 			});
-			monthlyPlant.forEach(function(plant) {
-				plant.months.forEach(function(month) {
-					monthlyTable.push({
-						werks: plant.werks,
-						month: month.month,
-						pgi: month.pgi,
-						grn: month.grn
-					});
+			var monthlyTable = rows.length ? monthlyPlant.map(function(plant) {
+				var tableRow = {
+					werks: plant.werks
+				};
+				plant.months.forEach(function(month, index) {
+					var suffix = (index + 1 < 10 ? "0" : "") + (index + 1);
+					tableRow["pgi_" + suffix] = month.pgi;
+					tableRow["grn_" + suffix] = month.grn;
 				});
-			});
+				return tableRow;
+			}) : [];
 			return {
 				byMonth: byMonth.map(function(item) {
 					return {
@@ -652,7 +723,10 @@ sap.ui.define([
 			this._applyTableSearch("plantTable", ["werks"], event.getParameter("newValue"));
 		},
 		onMonthlySearch: function(event) {
-			this._applyTableSearch("monthlyTable", ["werks", "month"], event.getParameter("newValue"));
+			var query = String(event.getParameter("newValue") || "").trim();
+			var table = this.byId("monthlyTable");
+			var binding = table.getBinding("rows");
+			binding.filter(query ? [new Filter("werks", FilterOperator.Contains, query)] : []);
 		},
 		_applyTableSearch: function(tableId, fields, query) {
 			var binding = this.byId(tableId).getBinding("rows");
@@ -683,21 +757,22 @@ sap.ui.define([
 			}], "STO_Plant_Summary.xlsx");
 		},
 		onExportMonthly: function() {
-			this._export("monthlyTable", [{
+			var columns = [{
 				label: "Receiving Plant",
 				property: "werks"
-			}, {
-				label: "Month",
-				property: "month"
-			}, {
-				label: "PGI Records",
-				property: "pgi",
-				type: "Number"
-			}, {
-				label: "GRN Records",
-				property: "grn",
-				type: "Number"
-			}], "STO_Monthly_Summary.xlsx");
+			}];
+			(this._monthlyTableMonthColumns || []).forEach(function(month) {
+				columns.push({
+					label: month.month + " - PGI Records",
+					property: month.pgiProperty,
+					type: "Number"
+				}, {
+					label: month.month + " - GRN Records",
+					property: month.grnProperty,
+					type: "Number"
+				});
+			});
+			this._export("monthlyTable", columns, "STO_Monthly_Summary.xlsx");
 		},
 		_export: function(tableId, columns, filename) {
 			var table = this.byId(tableId);

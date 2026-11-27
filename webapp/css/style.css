@@ -122,9 +122,9 @@ body,
     padding: 1rem 1.5rem 2rem !important;
 }
 
-.kpiGrid {
-    margin: 0 -.4rem .8rem;
-}
+/*.kpiGrid {*/
+/*    margin: 0 -.4rem .8rem;*/
+/*}*/
 
 .kpiGrid .kpiCard {
     position: relative;
@@ -134,9 +134,11 @@ body,
     margin: .4rem;
     padding: .8rem .95rem .75rem 1rem;
     border: 1px solid #e0e7ed;
-    border-left: 4px solid #0070f2;
+    /*border-left: 4px solid #0070f2;*/
+    border-left: 4px solid #52736b;
     border-radius: .85rem;
-    background: #fff;
+    /*background: #fff;*/
+    background: #e2f5ef;
     box-shadow: 0 4px 14px rgba(23, 46, 67, .065), 0 1px 2px rgba(23, 46, 67, .035);
     transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
@@ -272,7 +274,11 @@ body,
 }
 
 .sectionHeader {
-    gap: .85rem;
+    gap: .65rem;
+    margin-bottom: .8rem;
+    background-color: #7fbbb0;
+    border-radius: 2rem;
+    
     /*margin: .15rem 0 1rem;*/
 }
 

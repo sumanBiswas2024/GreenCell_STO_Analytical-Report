@@ -115,7 +115,7 @@
 					<HBox width="100%" justifyContent="Center" alignItems="Center" visible="{view>/monthlyBusy}" class="sectionLoader"><BusyIndicator size="1.75rem"/><Text text="Loading monthly analysis…" class="loaderText"/></HBox>
 					<MessageStrip text="{view>/monthlyError}" type="Error" showIcon="true" visible="{= !!${view>/monthlyError} }" class="sapUiSmallMarginTop"/>
 					<VBox visible="{view>/monthlyVisible}" class="sectionBlock">
-					<!--<VBox visible="false" class="sectionBlock">-->
+						<!--<VBox visible="false" class="sectionBlock">-->
 						<HBox class="sectionHeader" alignItems="Center">
 							<core:Icon src="sap-icon://calendar" class="sectionHeaderIcon"/>
 							<VBox class="sectionHeading"><Title text="{view>/monthlyTitle}" level="H2" class="sectionTitle"/></VBox>
@@ -193,16 +193,16 @@
 						<VBox class="summaryCard tablePanel">
 							<OverflowToolbar><Title text="Plant Summary" level="H3"/><ToolbarSpacer/><SearchField width="10rem" placeholder="Search plants" liveChange="onPlantSearch"/><Button text="Export" icon="sap-icon://excel-attachment" press="onExportPlant"/></OverflowToolbar>
 							<HBox class="tableContextBar" alignItems="Center"><core:Icon src="sap-icon://factory"/><Text text="{= 'Supplying plant: ' + ${view>/plantContext} + ' · Monthly section year: ' + ${view>/year} }"/></HBox>
-							<table:Table id="plantTable" width="100%" rows="{plant>/table}" selectionMode="None" visibleRowCountMode="Auto" minAutoRowCount="8"
+							<table:Table id="plantTable" width="100%" rows="{plant>/table}" selectionMode="None" visibleRowCountMode="Fixed" visibleRowCount="8"
 								enableColumnReordering="true" showNoData="true">
 								<table:columns>
 									<table:Column sortProperty="werks" filterProperty="werks"><Label text="Receiving Plant"/>
 										<table:template><Text text="{plant>werks}"/></table:template>
 									</table:Column>
-									<table:Column sortProperty="po" filterProperty="po" hAlign="End"><Label text="STO POs"/>
+									<table:Column sortProperty="po" filterProperty="po"><Label text="STO POs"/>
 										<table:template><ObjectNumber number="{plant>po}"/></table:template>
 									</table:Column>
-									<table:Column sortProperty="value" filterProperty="value" hAlign="End"><Label text="PGI Value (INR Lakh)"/>
+									<table:Column sortProperty="value" filterProperty="value"><Label text="PGI Value (INR Lakh)"/>
 										<table:template><ObjectNumber number="{plant>value}"/></table:template>
 									</table:Column>
 								</table:columns>
@@ -210,25 +210,10 @@
 							<layoutData><layout:GridData span="XL5 L5 M5 S12"/></layoutData>
 						</VBox>
 						<VBox class="summaryCard tablePanel">
-							<OverflowToolbar><Title text="Monthly PGI / GRN Summary" level="H3"/><ToolbarSpacer/><SearchField width="10rem" placeholder="Search plants or months" liveChange="onMonthlySearch"/><Button text="Export" icon="sap-icon://excel-attachment" press="onExportMonthly"/></OverflowToolbar>
+							<OverflowToolbar><Title text="Monthly PGI / GRN Summary" level="H3"/><ToolbarSpacer/><SearchField id="monthlySearch" width="10rem" placeholder="Search receiving plant" liveChange="onMonthlySearch"/><Button text="Export" icon="sap-icon://excel-attachment" press="onExportMonthly"/></OverflowToolbar>
 							<HBox class="tableContextBar" alignItems="Center"><core:Icon src="sap-icon://factory"/><Text text="{= 'Supplying plant: ' + ${view>/plantContext} + ' · Monthly section year: ' + ${view>/year} }"/></HBox>
-							<table:Table id="monthlyTable" width="100%" rows="{monthly>/table}" selectionMode="None" visibleRowCountMode="Auto" minAutoRowCount="8"
-								enableColumnReordering="true" showNoData="true">
-								<table:columns>
-									<table:Column sortProperty="werks" filterProperty="werks"><Label text="Receiving Plant"/>
-										<table:template><Text text="{monthly>werks}"/></table:template>
-									</table:Column>
-									<table:Column sortProperty="month" filterProperty="month"><Label text="Month"/>
-										<table:template><Text text="{monthly>month}"/></table:template>
-									</table:Column>
-									<table:Column sortProperty="pgi" filterProperty="pgi" hAlign="End"><Label text="PGI Records"/>
-										<table:template><ObjectNumber number="{monthly>pgi}"/></table:template>
-									</table:Column>
-									<table:Column sortProperty="grn" filterProperty="grn" hAlign="End"><Label text="GRN Records"/>
-										<table:template><ObjectNumber number="{monthly>grn}"/></table:template>
-									</table:Column>
-								</table:columns>
-							</table:Table>
+							<table:Table id="monthlyTable" width="100%" rows="{monthly>/table}" selectionMode="None" visibleRowCountMode="Fixed" visibleRowCount="7"
+								fixedColumnCount="1" enableColumnReordering="false" showNoData="true" class="monthlyMatrixTable"></table:Table>
 							<layoutData><layout:GridData span="XL7 L7 M7 S12"/></layoutData>
 						</VBox>
 					</layout:Grid>
